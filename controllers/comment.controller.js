@@ -3,7 +3,11 @@ import { commentValidation } from "../validations/validations.js";
 
 async function findAll(req, res) {
     try {
-        let data = await Comment.findAll()
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const offset = (page - 1) * pageSize;
+
+        let data = await Comment.findAll({ limit: pageSize, offset: offset })
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -51,15 +55,6 @@ async function create(req, res) {
         res.status(400).send(error)
     }
 };
-async function update(req, res) {
-    try {
-        let data = await Comment.update(req.body, { where: { id: req.params.id } })
-        res.send("updated successfully ✅")
-    } catch (error) {
-        console.log(error);
-        res.status(400).send(error)
-    }
-};
 async function remove(req, res) {
     try {
         await Comment.destroy({ where: { id: req.params.id } })
@@ -70,4 +65,4 @@ async function remove(req, res) {
     }
 };
 
-export { findAll, findBySearch, findOne, create, update, remove }
+export { findAll, findBySearch, findOne, create, remove }

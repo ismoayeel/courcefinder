@@ -1,5 +1,6 @@
-import Liked from "../models/liked.model.js";
-import { likedValidation } from "../validations/validations.js";
+import Region from "../models/region.model.js";
+import { regionUpdate } from "../validations/updateValidations.js";
+import { regionValidation } from "../validations/validations.js";
 
 async function findAll(req, res) {
     try {
@@ -7,7 +8,7 @@ async function findAll(req, res) {
         const pageSize = parseInt(req.query.pageSize) || 10;
         const offset = (page - 1) * pageSize;
 
-        let data = await Liked.findAll({ limit: pageSize, offset: offset })
+        let data = await Region.findAll({ limit: pageSize, offset: offset })
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -26,7 +27,7 @@ async function findBySearch(req, res) {
             }
         });
         console.log(newObj);
-        let data = await Liked.findAll({ where: obj });
+        let data = await Region.findAll({ where: newObj });
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -35,7 +36,7 @@ async function findBySearch(req, res) {
 };
 async function findOne(req, res) {
     try {
-        let data = await Liked.findByPk(req.params.id)
+        let data = await Region.findByPk(req.params.id)
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -44,12 +45,25 @@ async function findOne(req, res) {
 };
 async function create(req, res) {
     try {
-        let { error, value } = likedValidation.validate(req.body)
+        let { error, value } = regionValidation.validate(req.body)
         if (error) {
             return res.status(400).send(error.details[0].message)
         }
-        await Liked.create(req.body)
-        res.status(201).send("liked Successfully ✅")
+        await Region.create(req.body)
+        res.status(201).send("created Successfully ✅")
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error)
+    }
+};
+async function update(req, res) {
+    try {
+        let { error, value } = regionUpdate.validate(req.body)
+        if (error) {
+            return res.status(400).send(error.details[0].message)
+        }
+        let data = await Region.update(req.body, { where: { id: req.params.id } })
+        res.send("updated successfully ✅")
     } catch (error) {
         console.log(error);
         res.status(400).send(error)
@@ -57,12 +71,12 @@ async function create(req, res) {
 };
 async function remove(req, res) {
     try {
-        await Liked.destroy({ where: { id: req.params.id } })
-        res.send("unliked successfully ✅")
+        await Region.destroy({ where: { id: req.params.id } })
+        res.send("deleted successfully ✅")
     } catch (error) {
         console.log(error);
         res.status(400).send(error)
     }
 };
 
-export { findAll, findBySearch, findOne, create, remove }
+export { findAll, findBySearch, findOne, create, update, remove }

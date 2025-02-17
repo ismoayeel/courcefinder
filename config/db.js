@@ -2,7 +2,7 @@ import { Sequelize } from "sequelize"
 
 let sequelize = new Sequelize({
     username: "root",
-    password: "",
+    password: "ismoayeel",
     host: "localhost",
     database: "cource",
     dialect: "mysql",
