@@ -12,6 +12,7 @@ let PORT = process.env.PORT
 async function bootstrap() {
     try {
         await sequelize.authenticate()
+        await sequelize.sync({ force: true })
         console.log("db connected");
         app.listen(PORT, () => {
             console.log(`server started on port: ${PORT}`);
