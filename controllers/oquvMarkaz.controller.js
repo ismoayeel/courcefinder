@@ -4,7 +4,11 @@ import { oquvMarkazValidation } from "../validations/validations.js";
 
 async function findAll(req, res) {
     try {
-        let data = await Oquvmarkaz.findAll()
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pagesize) || 10;
+        const offset = (page - 1) * pageSize;
+
+        let data = await Oquvmarkaz.findAndCountAll({ limit: pageSize, offset: offset })
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -41,11 +45,23 @@ async function findOne(req, res) {
 };
 async function create(req, res) {
     try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+        let { filename } = req.file
+        let data = req.body
         let { error, value } = oquvMarkazValidation.validate(req.body)
         if (error) {
-            return res.status(400).send(error.details[0].message)
+            res.status(400).send(error.details[0].message)
+            await fs.unlink(`./uploads/${filename}`)
+            return
         }
-        await Oquvmarkaz.create(req.body)
+        let newItem = {
+            ...req.body,
+            image: filename
+        }
+
+        await Oquvmarkaz.create(newItem)
         res.status(201).send("created Successfully ✅")
     } catch (error) {
         console.log(error);

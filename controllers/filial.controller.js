@@ -1,9 +1,15 @@
 import Filial from "../models/filial.model.js";
+import { filialUpdate } from "../validations/updateValidations.js";
 import { filialValidation } from "../validations/validations.js";
+import { promises as fs } from "fs"
 
 async function findAll(req, res) {
     try {
-        let data = await Filial.findAll()
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const offset = (page - 1) * pageSize;
+
+        let data = await Filial.findAll({ limit: pageSize, offset: offset })
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -22,7 +28,7 @@ async function findBySearch(req, res) {
             }
         });
         console.log(newObj);
-        let data = await Filial.findAll({ where: obj });
+        let data = await Filial.findAll({ where: newObj });
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -40,11 +46,23 @@ async function findOne(req, res) {
 };
 async function create(req, res) {
     try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+        let { filename } = req.file
+        let data = req.body
         let { error, value } = filialValidation.validate(req.body)
         if (error) {
-            return res.status(400).send(error.details[0].message)
+            res.status(400).send(error.details[0].message)
+            await fs.unlink(`./uploads/${filename}`)
+            return
         }
-        await Filial.create(req.body)
+        let newItem = {
+            ...req.body,
+            image: filename
+        }
+
+        await Filial.create(newItem)
         res.status(201).send("created Successfully ✅")
     } catch (error) {
         console.log(error);
@@ -53,6 +71,10 @@ async function create(req, res) {
 };
 async function update(req, res) {
     try {
+        let { error, value } = filialUpdate.validate(req.body)
+        if (error) {
+            return res.status(400).send(error.details[0].message)
+        }
         let data = await Filial.update(req.body, { where: { id: req.params.id } })
         res.send("updated successfully ✅")
     } catch (error) {
