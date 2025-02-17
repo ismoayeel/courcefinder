@@ -14,13 +14,8 @@ app.use('/api', mainRote)
 
 async function bootstrap() {
     try {
-<<<<<<< HEAD
-        // await sequelize.authenticate()
-        await sequelize.sync({force:true})
-=======
         await sequelize.authenticate()
         await sequelize.sync({ force: true })
->>>>>>> 9a31a9a70e98411a13b6259a2c07dfcea55ef28f
         console.log("db connected");
         app.listen(PORT, () => {
             console.log(`server started on port: ${PORT}`);
