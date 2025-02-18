@@ -1,8 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
-import Liked from "./liked.model.js";
-import Comment from "./comment.model.js";
-import Oquvmarkaz from "./oquvMarkaz.model.js";
 
 let User = sequelize.define("user", {
     fullname: {
@@ -31,9 +28,5 @@ let User = sequelize.define("user", {
         allowNull: false
     }
 }, { timestamps: true })
-
-User.hasMany(Oquvmarkaz, { foreignKey: "userId", onDelete: "CASCADE" });
-User.hasMany(Comment, { foreignKey: "userId", onDelete: "CASCADE" });
-User.hasMany(Liked, { foreignKey: "userId", onDelete: "CASCADE" });
 
 export default User

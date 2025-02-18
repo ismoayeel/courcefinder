@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
-import Oquvmarkaz from "./oquvMarkaz.model.js";
 import User from "./user.model.js";
+import Oquvmarkaz from "./oquvMarkaz.model.js";
 
 let Comment = sequelize.define("comments", {
     id: {
@@ -36,6 +36,10 @@ let Comment = sequelize.define("comments", {
 }, { timestamps: true })
 
 Comment.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(Comment, { foreignKey: "userId", onDelete: "CASCADE" });
+
+
 Comment.belongsTo(Oquvmarkaz, { foreignKey: "oquvMarkazId" });
+Oquvmarkaz.hasMany(Comment, { foreignKey: "oquvMarkazId", onDelete: "CASCADE" });
 
 export default Comment
