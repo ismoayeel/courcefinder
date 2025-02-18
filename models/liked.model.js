@@ -1,7 +1,7 @@
+import User from "./user.model.js";
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 import Oquvmarkaz from "./oquvMarkaz.model.js";
-import User from "./user.model.js";
 
 let Liked = sequelize.define("liked", {
     id: {
