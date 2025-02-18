@@ -5,10 +5,10 @@ import { regionValidation } from "../validations/validations.js";
 async function findAll(req, res) {
     try {
         const page = parseInt(req.query.page) || 1;
-        const pageSize = parseInt(req.query.pageSize) || 10;
-        const offset = (page - 1) * pageSize;
+        const pagesize = parseInt(req.query.pagesize) || 10;
+        const offset = (page - 1) * pagesize;
 
-        let data = await Region.findAll({ limit: pageSize, offset: offset })
+        let data = await Region.findAll({ limit: pagesize, offset: offset })
         res.send(data)
     } catch (error) {
         console.log(error);

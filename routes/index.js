@@ -8,11 +8,11 @@ import userRoute from "./user.routes.js";
 
 const mainRoute = Router()
 
-mainRoute.use("/", commentRoute)
-mainRoute.use("/", filialRoute)
-mainRoute.use("/", likedRoute)
-mainRoute.use("/", oquvmarkazRoute)
-mainRoute.use("/", regionRoute)
-mainRoute.use('/', userRoute)
+mainRoute.use("/comment", commentRoute)
+mainRoute.use("/filial", filialRoute)
+mainRoute.use("/liked", likedRoute)
+mainRoute.use("/oquvmarkaz", oquvmarkazRoute)
+mainRoute.use("/region", regionRoute)
+mainRoute.use('/user', userRoute)
 
-export default mainRote
+export default mainRoute

@@ -3,11 +3,11 @@ import { create, findAll, findBySearch, findOne, remove, update } from "../contr
 
 const oquvmarkazRoute = Router()
 
-oquvmarkazRoute.get("/oquvmarkaz", findAll)
-oquvmarkazRoute.get("/oquvmarkaz", findBySearch)
-oquvmarkazRoute.get("/oquvmarkaz/:id", findOne)
-oquvmarkazRoute.post("/oquvmarkaz", create)
-oquvmarkazRoute.patch("/oquvmarkaz/:id", update)
-oquvmarkazRoute.delete("/oquvmarkaz/:id", remove)
+oquvmarkazRoute.get("/", findAll)
+oquvmarkazRoute.get("/", findBySearch)
+oquvmarkazRoute.get("/:id", findOne)
+oquvmarkazRoute.post("/", create)
+oquvmarkazRoute.patch("/:id", update)
+oquvmarkazRoute.delete("/:id", remove)
 
 export default oquvmarkazRoute 

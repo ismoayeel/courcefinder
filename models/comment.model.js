@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 import Oquvmarkaz from "./oquvMarkaz.model.js";
+import User from "./user.model.js";
 
 let Comment = sequelize.define("comments", {
     id: {
@@ -10,7 +11,11 @@ let Comment = sequelize.define("comments", {
     },
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: User,
+            key: "id"
+        }
     },
     msg: {
         type: DataTypes.STRING,
@@ -29,5 +34,8 @@ let Comment = sequelize.define("comments", {
         }
     }
 }, { timestamps: true })
+
+Comment.belongsTo(User, { foreignKey: "userId" });
+Comment.belongsTo(Oquvmarkaz, { foreignKey: "oquvMarkazId" });
 
 export default Comment
