@@ -1,5 +1,5 @@
-import resursCategory from "../models/resursCategory.model";
-import { resursCategoryValidation } from "../validations/resursValidation";
+import resursCategory from "../models/resursCategory.model.js";
+import { resursCategoryValidation } from "../validations/resursValidation.js";
 
 const createResursCategoriy = async (req, res) => {
   try {
