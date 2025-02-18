@@ -82,11 +82,15 @@ async function login(req, res) {
 }
 async function findAll(req, res) {
     try {
-        const users = await User.findAll();
-        if (!users.length) {
+        const page = parseInt(req.query.page) || 1;
+        const pagesize = parseInt(req.query.pagesize) || 10;
+        const offset = (page - 1) * pagesize;
+
+        let user = await Region.findAll({ limit: pagesize, offset: offset })
+        if (!user.length) {
             return res.status(404).send({ message: "User empty" });
         }
-        res.status(200).send({ data: users })
+        res.status(200).send({ data: user })
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: error.message })
