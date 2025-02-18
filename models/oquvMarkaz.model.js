@@ -2,9 +2,6 @@ import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 import Region from "./region.model.js";
 import User from "./user.model.js";
-import Filial from "./filial.model.js";
-import Comment from "./comment.model.js";
-import Liked from "./liked.model.js";
 
 let Oquvmarkaz = sequelize.define("oquvmarkazs", {
     id: {
@@ -51,9 +48,9 @@ let Oquvmarkaz = sequelize.define("oquvmarkazs", {
 }, { timestamps: true })
 
 Oquvmarkaz.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(Oquvmarkaz, { foreignKey: "userId", onDelete: "CASCADE" });
+
 Oquvmarkaz.belongsTo(Region, { foreignKey: "regionId" });
-Oquvmarkaz.hasMany(Filial, { foreignKey: "oquvMarkazId", onDelete: "CASCADE" });
-Oquvmarkaz.hasMany(Comment, { foreignKey: "oquvMarkazId", onDelete: "CASCADE" });
-Oquvmarkaz.hasMany(Liked, { foreignKey: "oquvMarkazId", onDelete: "CASCADE" });
+Region.hasMany(Oquvmarkaz, { foreignKey: "regionId" })
 
 export default Oquvmarkaz

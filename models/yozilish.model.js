@@ -1,9 +1,9 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 import User from "./user.model.js";
-import Oquvmarkaz from "./oquvMarkaz.model.js";
+import Yonalish from "./yonalish.model.js";
 
-let Liked = sequelize.define("liked", {
+let Yozilish = sequelize.define("yozilish", {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -17,20 +17,15 @@ let Liked = sequelize.define("liked", {
             key: "id"
         }
     },
-    oquvMarkazId: {
+    yonalishId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Oquvmarkaz,
+            model: Yonalish,
             key: "id"
         }
-    }
+    },
 }, { timestamps: true })
 
-Liked.belongsTo(Oquvmarkaz, { foreignKey: "oquvMarkazId" });
-Oquvmarkaz.hasMany(Liked, { foreignKey: "oquvMarkazId", onDelete: "CASCADE" });
 
-User.hasMany(Liked, { foreignKey: "userId", onDelete: "CASCADE" });
-Liked.belongsTo(User, { foreignKey: "userId" });
-
-export default Liked
+export default Yozilish
