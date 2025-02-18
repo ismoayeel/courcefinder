@@ -9,10 +9,10 @@ import {
 
 const resursCategoryRoute = express.Router();
 
-resursCategoryRoute.post("/resurs-category", createResursCategoriy);
-resursCategoryRoute.get("/resurs-category", getAllResursCategoriy);
-resursCategoryRoute.get("/resurs-category/:id", getOneResursCategoriy);
-resursCategoryRoute.patch("/resurs-category/:id", updateResursCategoriy);
-resursCategoryRoute.delete("/resurs-category/:id", deleteResursCategoriy);
+resursCategoryRoute.post("/", createResursCategoriy);
+resursCategoryRoute.get("/", getAllResursCategoriy);
+resursCategoryRoute.get("/:id", getOneResursCategoriy);
+resursCategoryRoute.patch("/:id", updateResursCategoriy);
+resursCategoryRoute.delete("/:id", deleteResursCategoriy);
 
 export default resursCategoryRoute;

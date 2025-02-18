@@ -1,5 +1,6 @@
 import { DataTypes, STRING } from "sequelize";
 import sequelize from "../config/db.js";
+import User from "./user.model.js";
 
 let Resurs = sequelize.define(
   "resurs",
@@ -11,8 +12,11 @@ let Resurs = sequelize.define(
     },
     userId: {
       type: DataTypes.INTEGER,
-
       allowNull: false,
+      references: {
+        model: User,
+        key: "id"
+      }
     },
     name: {
       type: DataTypes.STRING,

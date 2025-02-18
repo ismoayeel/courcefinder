@@ -1,6 +1,6 @@
-import Filial from "../models/filial.model.js";
-import { filialUpdate } from "../validations/updateValidations.js";
-import { filialValidation } from "../validations/validations.js";
+import Yozilish from "../models/yozilish.model.js";
+import { yozilishUpdate } from "../validations/updateValidations.js";
+import { yozilishValidation } from "../validations/validations.js";
 
 async function findAll(req, res) {
     try {
@@ -8,7 +8,7 @@ async function findAll(req, res) {
         const pagesize = parseInt(req.query.pagesize) || 10;
         const offset = (page - 1) * pagesize;
 
-        let data = await Filial.findAll({ limit: pagesize, offset: offset })
+        let data = await Yozilish.findAll({ limit: pagesize, offset: offset })
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -27,7 +27,7 @@ async function findBySearch(req, res) {
             }
         });
         console.log(newObj);
-        let data = await Filial.findAll({ where: newObj });
+        let data = await Yozilish.findAll({ where: newObj });
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -36,7 +36,7 @@ async function findBySearch(req, res) {
 };
 async function findOne(req, res) {
     try {
-        let data = await Filial.findByPk(req.params.id)
+        let data = await Yozilish.findByPk(req.params.id)
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -45,11 +45,11 @@ async function findOne(req, res) {
 };
 async function create(req, res) {
     try {
-        let { error, value } = filialValidation.validate(req.body)
+        let { error, value } = yozilishValidation.validate(req.body)
         if (error) {
             return res.status(400).send(error.details[0].message)
         }
-        await Filial.create(req.body  )
+        await Yozilish.create(req.body)
         res.status(201).send("created Successfully ✅")
     } catch (error) {
         console.log(error);
@@ -58,11 +58,11 @@ async function create(req, res) {
 };
 async function update(req, res) {
     try {
-        let { error, value } = filialUpdate.validate(req.body)
+        let { error, value } = yozilishUpdate.validate(req.body)
         if (error) {
             return res.status(400).send(error.details[0].message)
         }
-        let data = await Filial.update(req.body, { where: { id: req.params.id } })
+        let data = await Yozilish.update(req.body, { where: { id: req.params.id } })
         res.send("updated successfully ✅")
     } catch (error) {
         console.log(error);
@@ -71,7 +71,7 @@ async function update(req, res) {
 };
 async function remove(req, res) {
     try {
-        await Filial.destroy({ where: { id: req.params.id } })
+        await Yozilish.destroy({ where: { id: req.params.id } })
         res.send("deleted successfully ✅")
     } catch (error) {
         console.log(error);

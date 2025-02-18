@@ -27,7 +27,7 @@ async function findBySearch(req, res) {
             }
         });
         console.log(newObj);
-        let data = await Oquvmarkaz.findAll({ where: obj });
+        let data = await Oquvmarkaz.findAll({ where: newObj });
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -45,23 +45,11 @@ async function findOne(req, res) {
 };
 async function create(req, res) {
     try {
-        if (!req.file) {
-            return res.status(400).json({ message: 'No file uploaded' });
-        }
-        let { filename } = req.file
-        let data = req.body
         let { error, value } = oquvMarkazValidation.validate(req.body)
         if (error) {
-            res.status(400).send(error.details[0].message)
-            await fs.unlink(`./uploads/${filename}`)
-            return
+            return res.status(400).send(error.details[0].message)
         }
-        let newItem = {
-            ...req.body,
-            image: filename
-        }
-
-        await Oquvmarkaz.create(newItem)
+        await Oquvmarkaz.create(req.body)
         res.status(201).send("created Successfully ✅")
     } catch (error) {
         console.log(error);

@@ -17,8 +17,7 @@ let resursItem = sequelize.define(
       references: {
         model: Resurs,
         key: "id",
-      },
-      onDelete: "CASCADE",
+      }
     },
     resursCategoryId: {
       type: DataTypes.INTEGER,
@@ -26,9 +25,8 @@ let resursItem = sequelize.define(
       references: {
         model: resursCategory,
         key: "id",
-      },
-      onDelete: "CASCADE",
-    },
+      }
+    }
   },
   { timestamps: true }
 );
