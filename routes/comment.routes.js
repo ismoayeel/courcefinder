@@ -3,10 +3,10 @@ import { create, findAll, findBySearch, findOne, remove } from "../controllers/c
 
 const commentRoute = Router()
 
-commentRoute.get("/comment", findAll)
-commentRoute.get("/comment", findBySearch)
-commentRoute.get("/comment/:id", findOne)
-commentRoute.post("/comment", create)
-commentRoute.delete("/comment/:id", remove)
+commentRoute.get("/", findAll)
+commentRoute.get("/", findBySearch)
+commentRoute.get("/:id", findOne)
+commentRoute.post("/", create)
+commentRoute.delete("/:id", remove)
 
 export default commentRoute

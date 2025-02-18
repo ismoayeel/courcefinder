@@ -3,10 +3,10 @@ import { create, findAll, findBySearch, findOne, remove } from "../controllers/l
 
 const likedRoute = Router()
 
-likedRoute.get("/liked", findAll)
-likedRoute.get("/liked", findBySearch)
-likedRoute.get("/liked/:id", findOne)
-likedRoute.post("/liked", create)
-likedRoute.delete("/liked/:id", remove)
+likedRoute.get("/", findAll)
+likedRoute.get("/", findBySearch)
+likedRoute.get("/:id", findOne)
+likedRoute.post("/", create)
+likedRoute.delete("/:id", remove)
 
 export default likedRoute

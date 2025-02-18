@@ -1,6 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
 import Region from "./region.model.js";
+import Oquvmarkaz from "./oquvMarkaz.model.js";
 
 let Filial = sequelize.define("filials", {
     id: {
@@ -10,7 +11,11 @@ let Filial = sequelize.define("filials", {
     },
     oquvMarkazId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: Oquvmarkaz,
+            key: "id"
+        }
     },
     regionId: {
         type: DataTypes.INTEGER,
@@ -37,5 +42,8 @@ let Filial = sequelize.define("filials", {
         allowNull: false
     },
 }, { timestamps: true })
+
+Filial.belongsTo(Oquvmarkaz, { foreignKey: "oquvMarkazId" });
+Filial.belongsTo(Region, { foreignKey: "regionId" });
 
 export default Filial

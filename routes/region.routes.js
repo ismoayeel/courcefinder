@@ -3,11 +3,11 @@ import { create, findAll, findBySearch, findOne, remove, update } from "../contr
 
 const regionRoute = Router()
 
-regionRoute.get("/region", findAll)
-regionRoute.get("/region", findBySearch)
-regionRoute.get("/region/:id", findOne)
-regionRoute.post("/region", create)
-regionRoute.patch("/region/:id", update)
-regionRoute.delete("/region/:id", remove)
+regionRoute.get("/", findAll)
+regionRoute.get("/", findBySearch)
+regionRoute.get("/:id", findOne)
+regionRoute.post("/", create)
+regionRoute.patch("/:id", update)
+regionRoute.delete("/:id", remove)
 
 export default regionRoute
