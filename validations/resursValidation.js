@@ -17,4 +17,16 @@ const resursItemvalidation = joi.object({
   resursCategoryId: joi.number().required(),
 });
 
-export { resursValidation, resursCategoryValidation, resursItemvalidation };
+const sohaFanValidation = joi.object({
+  yonalishId: joi.number().required(),
+  name: joi.string().min(4).required(),
+  image: joi.string().required(),
+  type: joi.string().valid("soha", "fan").required(),
+});
+
+export {
+  resursValidation,
+  resursCategoryValidation,
+  resursItemvalidation,
+  sohaFanValidation,
+};
