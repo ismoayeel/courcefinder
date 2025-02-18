@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize"
+import { Sequelize } from "sequelize";
 
 let sequelize = new Sequelize({
     username: "root",
@@ -9,4 +9,4 @@ let sequelize = new Sequelize({
     logging: false
 })
 
-export default sequelize
+export default sequelize;

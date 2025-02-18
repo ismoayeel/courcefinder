@@ -16,7 +16,7 @@ let emailstore = {}
 async function sendOtp(req, res) {
     try {
         const { email } = req.body;
-        
+
         const otp = totp.generate(`${process.env.OTPKEY}${email}`)
         await SendMail(email, otp);
         res.status(200).send({ message: "OTP emailga yuborildi" })
@@ -30,7 +30,7 @@ async function verfyOtp(req, res) {
     try {
         const { email, otp } = req.body
 
-        
+
         const checkOtp = totp.check(otp, `${process.env.OTPKEY}${email}`);
         if (!checkOtp) {
             return res.status(400).send({ message: "invalid otp" })
@@ -41,7 +41,6 @@ async function verfyOtp(req, res) {
         res.status(500).send({ message: error.message })
     }
 }
-
 async function register(req, res) {
     try {
         const { error } = registerValidate.validate(req.body);
@@ -49,12 +48,6 @@ async function register(req, res) {
             return res.status(400).send({ message: error.details[0].message })
         }
         const { fullname, phone, password, email, role, image } = req.body
-
-        const checkOtp = await User.findOne({ where: { email } });
-        if (!checkOtp) {
-            return res.status(400).send({ message: "Please verify your email first." });
-        }
-
         const newUser = await User.findOne({ where: { email } })
         if (newUser) {
             res.status(400).send({ message: "This account already exists" })
@@ -68,8 +61,6 @@ async function register(req, res) {
         res.status(500).send({ message: error.message })
     }
 }
-
-
 
 async function login(req, res) {
     try {

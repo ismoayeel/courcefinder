@@ -27,5 +27,4 @@ let Yozilish = sequelize.define("yozilish", {
     },
 }, { timestamps: true })
 
-
 export default Yozilish
