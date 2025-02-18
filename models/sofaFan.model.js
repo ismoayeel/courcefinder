@@ -30,4 +30,7 @@ let Sohafan = sequelize.define("sohafan", {
     }
 }, { timestamps: true })
 
+Sohafan.belongsTo(Yonalish, { foreignKey: "yonalishId" });
+Yonalish.hasMany(Sohafan, { foreignKey: "yonalishId", onDelete: "CASCADE" });
+
 export default Sohafan

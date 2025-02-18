@@ -27,5 +27,10 @@ let Yozilish = sequelize.define("yozilish", {
     },
 }, { timestamps: true })
 
+Yozilish.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(Yozilish, { foreignKey: "userId", onDelete: "CASCADE" });
+
+Yozilish.belongsTo(Yonalish, { foreignKey: "yonalishId" });
+Yonalish.hasMany(Yozilish, { foreignKey: "yonalishId", onDelete: "CASCADE" });
 
 export default Yozilish

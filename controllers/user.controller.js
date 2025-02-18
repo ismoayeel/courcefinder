@@ -34,22 +34,30 @@ async function verfyOtp(req, res) {
         res.status(500).send({ message: error.message })
     }
 }
-
 async function register(req, res) {
     try {
+        let { filename } = req.file || null
         const { error } = registerValidate.validate(req.body);
         if (error) {
-            return res.status(400).send({ message: error.details[0].message })
+            res.status(400).send(error.details[0].message)
+            await fs.unlink(`./uploads/${filename}`)
+            return
         }
-        const { fullname, phone, password, email, role, image } = req.body
+        const { email } = req.body
         const newUser = await User.findOne({ where: { email } })
         if (newUser) {
+            await fs.unlink(`./uploads/${filename}`)
             res.status(400).send({ message: "This account already exists" })
             return
         }
-        const hashPassword = bcrypt.hashSync(password, 7);
-        await User.create({ fullname, phone, password: hashPassword, email, role, image })
-        res.status(201).send({ message: "Register successfully✅" })
+        const hashPassword = bcrypt.hashSync(password, 10);
+        let newItem = {
+            ...req.body,
+            password: hashPassword,
+            image: filename
+        }
+        await User.create(newItem)
+        res.status(201).send({ message: "Registered successfully✅" })
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: error.message })

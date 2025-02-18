@@ -19,3 +19,18 @@ let upload = multer({
 });
 
 export default upload;
+
+// let dest = "uploads"
+// const storage = multer.diskStorage({
+//     filename: (req, file, cb) => {
+//         cb(null, Math.random() + file.originalname)
+//     },
+//     destination: (req, file, cb) => {
+//         cb(null, dest)
+//     }
+// })
+// const upload = multer({ storage: storage })
+// app.post("/upload", upload.single("picture"), (req, res) => {
+//     res.send(req.file)
+// })
+// app.use("/rasm", express.static(dest))
