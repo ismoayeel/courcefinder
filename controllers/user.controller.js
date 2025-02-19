@@ -4,14 +4,19 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
 import SendMail from "../config/nodemailer.js";
+import jwt from "jsonwebtoken"
+import { promises as fs } from "fs"
+
 
 dotenv.config()
 
-totp.options = { step: 15, digits: 6 };
+totp.options = { step: 500, digits: 6 };
+
 
 async function sendOtp(req, res) {
     try {
         const { email } = req.body;
+
         const otp = totp.generate(`${process.env.OTPKEY}${email}`)
         await SendMail(email, otp);
         res.status(200).send({ message: "OTP emailga yuborildi" })
@@ -21,48 +26,36 @@ async function sendOtp(req, res) {
     }
 }
 
-async function verfyOtp(req, res) {
-    try {
-        const { email, otp } = req.body
-        const checkOtp = totp.check(otp, `${process.env.OTPKEY}${email}`);
-        if (!checkOtp) {
-            return res.status(400).send({ message: "invalid otp" })
-        }
-        res.status(200).send({ message: "OTP verified successfully ✅, You can register now" })
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ message: error.message })
-    }
-}
 async function register(req, res) {
     try {
-        let { filename } = req.file || null
+        const { otp } = req.params
         const { error } = registerValidate.validate(req.body);
         if (error) {
-            res.status(400).send(error.details[0].message)
-            await fs.unlink(`./uploads/${filename}`)
-            return
+            return res.status(400).send({ message: error.details[0].message })
         }
-        const { email } = req.body
+        const { fullname, phone, password, email, role, image } = req.body
+
+        const checkOtp = totp.check(otp, `${process.env.OTPKEY}${email}`);
+        if (!checkOtp) {
+            return res.status(400).send({ message: "Email OTP bilan tasdiqlanmagan" });
+        }
+
         const newUser = await User.findOne({ where: { email } })
         if (newUser) {
-            await fs.unlink(`./uploads/${filename}`)
             res.status(400).send({ message: "This account already exists" })
             return
         }
-        const hashPassword = bcrypt.hashSync(password, 10);
-        let newItem = {
-            ...req.body,
-            password: hashPassword,
-            image: filename
-        }
-        await User.create(newItem)
-        res.status(201).send({ message: "Registered successfully✅" })
+        const hashPassword = bcrypt.hashSync(password, 7);
+        await User.create({ fullname, phone, password: hashPassword, email, role, image })
+
+        res.status(201).send({ message: "Register successfully✅" })
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: error.message })
     }
 }
+
+
 async function login(req, res) {
     try {
         const { email, password } = req.body;
@@ -74,7 +67,8 @@ async function login(req, res) {
         if (!comparePassword) {
             return res.status(400).send({ message: "Incorrect password" });
         }
-        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+        const token = jwt.sign({ id: user.id, email: user.email, role: user.role, image: user.image }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+        res.status(200).send({ message: token })
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: error.message })
@@ -86,7 +80,7 @@ async function findAll(req, res) {
         const pagesize = parseInt(req.query.pagesize) || 10;
         const offset = (page - 1) * pagesize;
 
-        let user = await Region.findAll({ limit: pagesize, offset: offset })
+        let user = await User.findAll({ limit: pagesize, offset: offset })
         if (!user.length) {
             return res.status(404).send({ message: "User empty" });
         }
@@ -116,13 +110,19 @@ async function update(req, res) {
         if (error) {
             return res.status(400).send({ message: error.details[0].message })
         }
-        const { fullname, email, role, image, phone } = req.body;
+        const { fullname, email, role, image, phone, password } = req.body;
+        if (image) {
+            await fs.unlink(`./uploads/${req.user.image}`)
+        }
         const user = await User.findByPk(id);
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }
-        await User.update({ fullname, email, role, image, phone, password });
-        res.status(200).send({ message: "User updated successfully", data: user });
+        await User.update({ fullname, email, role, image, phone, password }, { where: { id } });
+
+        const updatedUser = await User.findByPk(id)
+
+        res.status(200).send({ message: "User updated successfully", data: updatedUser });
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: error.message })
@@ -144,4 +144,4 @@ async function remove(req, res) {
     }
 }
 
-export { sendOtp, verfyOtp, register, findAll, findOne, update, remove, login }
+export { sendOtp, register, findAll, findOne, update, remove, login }
