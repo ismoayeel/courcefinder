@@ -27,10 +27,4 @@ let Liked = sequelize.define("liked", {
     }
 }, { timestamps: true })
 
-Liked.belongsTo(Oquvmarkaz, { foreignKey: "oquvMarkazId" });
-Oquvmarkaz.hasMany(Liked, { foreignKey: "oquvMarkazId", onDelete: "CASCADE" });
-
-User.hasMany(Liked, { foreignKey: "userId", onDelete: "CASCADE" });
-Liked.belongsTo(User, { foreignKey: "userId" });
-
 export default Liked

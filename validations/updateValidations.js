@@ -21,4 +21,19 @@ const filialUpdate = joi.object({
     location: joi.string().optional()
 })
 
-export { regionUpdate, oquvMarkazUpdate, filialUpdate}
+const yonalishUpdate = joi.object({
+    name: joi.number().required(),
+    image: joi.string().required()
+})
+
+const oquvMarkazYonalishUpdate = joi.object({
+    name: joi.number().required(),
+    image: joi.string().required()
+})
+
+const yozilishUpdate = joi.object({
+    userId: joi.number().required(),
+    yonalishId: joi.number().required()
+})
+
+export { regionUpdate, oquvMarkazUpdate, filialUpdate, yonalishUpdate, oquvMarkazYonalishUpdate, yozilishUpdate }

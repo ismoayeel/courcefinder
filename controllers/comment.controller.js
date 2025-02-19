@@ -26,7 +26,7 @@ async function findBySearch(req, res) {
             }
         });
         console.log(newObj);
-        let data = await Comment.findAll({ where: obj });
+        let data = await Comment.findAll({ where: newObj });
         res.send(data)
     } catch (error) {
         console.log(error);

@@ -1,5 +1,5 @@
 import resursItem from "../models/resursItem.model.js";
-import { resursItemvalidation } from "../validations/resursValidation.js";
+import { resursItemUpdate, resursItemvalidation } from "../validations/resursValidation.js";
 
 const createResursItem = async (req, res) => {
   try {
@@ -61,6 +61,10 @@ const getOneResursItem = async (req, res) => {
 
 const updateResursItem = async (req, res) => {
   try {
+    let { error, value } = resursItemUpdate.validate(req.body);
+    if (error) {
+      return res.send(error.details[0].message);
+    }
     await resursItem.update(req.body, { where: { id: req.params.id } });
     res.send("Reurs muvaffaqiyatli yangilandi");
   } catch (error) {

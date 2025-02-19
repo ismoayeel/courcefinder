@@ -1,5 +1,8 @@
-import Sohafan from "../models/sohaFan.model.js";
-import { sohaFanValidation } from "../validations/resursValidation.js";
+import Sohafan from "../models/sofaFan.model.js";
+import {
+  sohaFanUpdate,
+  sohaFanValidation,
+} from "../validations/resursValidation.js";
 
 async function findAll(req, res) {
   try {
@@ -72,11 +75,11 @@ async function create(req, res) {
 }
 async function update(req, res) {
   try {
-    let { error, value } = oquvMarkazUpdate.validate(req.body);
+    let { error, value } = sohaFanUpdate.validate(req.body);
     if (error) {
       return res.status(400).send(error.details[0].message);
     }
-    let data = await Sohafan.update(req.body, {
+    await Sohafan.update(req.body, {
       where: { id: req.params.id },
     });
     res.send("Muvaffaqiyatli yangilandi");

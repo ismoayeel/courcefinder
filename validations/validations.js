@@ -33,4 +33,19 @@ const commentValidation = joi.object({
     oquvMarkazId: joi.number().required()
 })
 
-export { regionValidation, oquvMarkazValidation, likedValidation, filialValidation, commentValidation }
+const yozilishValidation = joi.object({
+    userId: joi.number().required(),
+    yonalishId: joi.number().required()
+})
+
+const yonalishValidation = joi.object({
+    name: joi.number().required(),
+    image: joi.string().required()
+})
+
+const oquvMarkazYonalishValidation = joi.object({
+    name: joi.number().required(),
+    image: joi.string().required()
+})
+
+export { regionValidation, oquvMarkazValidation, likedValidation, filialValidation, commentValidation, yozilishValidation, yonalishValidation, oquvMarkazYonalishValidation }

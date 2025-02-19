@@ -1,24 +1,57 @@
 import multer from "multer";
 import path from "path";
 
-let storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "./uploads");
-    },
+const storage = multer.diskStorage({
     filename: (req, file, cb) => {
-        const extname = path.extname(file.originalname);
-        cb(null, `${Date.now()}${extname}`);
-    }
+        cb(null, `${Date.now()}${path.extname(file.originalname)}`);
+    },
+    destination: (req, file, cb) => {
+        cb(null, './uploads');
+    },
 });
 
-let upload = multer({
-    storage,
-    limits: {
+const upload = multer({
+    storage, limits: {
         fileSize: 5 * 1024 * 1024
     }
 });
 
 export default upload;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// let storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, "./uploads");
+//     },
+//     filename: (req, file, cb) => {
+//         const extname = path.extname(file.originalname);
+//         cb(null, `${Date.now()}${extname}`);
+//     }
+// });
+
+// let upload = multer({
+//     storage,
+//     limits: {
+//         fileSize: 5 * 1024 * 1024
+//     }
+// });
+
+// export default upload;
 
 // let dest = "uploads"
 // const storage = multer.diskStorage({
