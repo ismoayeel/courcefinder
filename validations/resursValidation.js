@@ -7,14 +7,31 @@ const resursValidation = joi.object({
   desc: joi.string().required(),
 });
 
+const resursUpdate = joi.object({
+  userId: joi.number().optional(),
+  name: joi.string().min(4).optional(),
+  media: joi.string().optional(),
+  desc: joi.string().optional(),
+});
+
 const resursCategoryValidation = joi.object({
   name: joi.string().min(4).required(),
   image: joi.string().required(),
 });
 
+const resursCategoryUpdate = joi.object({
+  name: joi.string().min(4).optional(),
+  image: joi.string().optional(),
+});
+
 const resursItemvalidation = joi.object({
   resursId: joi.number().required(),
   resursCategoryId: joi.number().required(),
+});
+
+const resursItemUpdate = joi.object({
+  resursId: joi.number().optional(),
+  resursCategoryId: joi.number().optional(),
 });
 
 const sohaFanValidation = joi.object({
@@ -24,9 +41,20 @@ const sohaFanValidation = joi.object({
   type: joi.string().valid("soha", "fan").required(),
 });
 
+const sohaFanUpdate = joi.object({
+  yonalishId: joi.number().optional(),
+  name: joi.string().min(4).optional(),
+  image: joi.string().optional(),
+  type: joi.string().valid("soha", "fan").optional(),
+});
+
 export {
   resursValidation,
   resursCategoryValidation,
   resursItemvalidation,
   sohaFanValidation,
+  sohaFanUpdate,
+  resursUpdate,
+  resursCategoryUpdate,
+  resursItemUpdate
 };

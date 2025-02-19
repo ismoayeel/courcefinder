@@ -1,5 +1,5 @@
 import Resurs from "../models/resurs.model.js";
-import { resursValidation } from "../validations/resursValidation.js";
+import { resursUpdate, resursValidation } from "../validations/resursValidation.js";
 
 const createResurs = async (req, res) => {
   try {
@@ -45,7 +45,11 @@ const getOneResurs = async (req, res) => {
 
 const updateResurs = async (req, res) => {
   try {
-    let data = await Resurs.update(req.body, { where: { id: req.params.id } });
+    let { error, value } = resursUpdate.validate(req.body);
+    if (error) {
+      return res.send(error.details[0].message);
+    }
+    await Resurs.update(req.body, { where: { id: req.params.id } });
     res.send("Reurs muvaffaqiyatli yangilandi");
   } catch (error) {
     console.error(error);

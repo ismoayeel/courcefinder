@@ -1,5 +1,5 @@
 import Sohafan from "../models/sofaFan.model.js";
-import { sohaFanValidation } from "../validations/resursValidation.js";
+import { sohaFanUpdate, sohaFanValidation } from "../validations/resursValidation.js";
 
 async function findAll(req, res) {
   try {
@@ -16,7 +16,7 @@ async function findAll(req, res) {
     console.log(error);
     res.status(400).send(error);
   }
-}
+};
 async function findBySearch(req, res) {
   try {
     let query = req.query;
@@ -35,7 +35,7 @@ async function findBySearch(req, res) {
     console.log(error);
     res.status(400).send(error);
   }
-}
+};
 async function findOne(req, res) {
   try {
     let data = await Sohafan.findByPk(req.params.id);
@@ -44,7 +44,7 @@ async function findOne(req, res) {
     console.log(error);
     res.status(400).send(error);
   }
-}
+};
 async function create(req, res) {
   try {
     if (!req.file) {
@@ -69,14 +69,14 @@ async function create(req, res) {
     console.log(error);
     res.status(400).send(error);
   }
-}
+};
 async function update(req, res) {
   try {
-    let { error, value } = oquvMarkazUpdate.validate(req.body);
+    let { error, value } = sohaFanUpdate.validate(req.body);
     if (error) {
       return res.status(400).send(error.details[0].message);
     }
-    let data = await Sohafan.update(req.body, {
+    await Sohafan.update(req.body, {
       where: { id: req.params.id },
     });
     res.send("updated successfully ✅");
@@ -84,7 +84,7 @@ async function update(req, res) {
     console.log(error);
     res.status(400).send(error);
   }
-}
+};
 async function remove(req, res) {
   try {
     await Sohafan.destroy({ where: { id: req.params.id } });
@@ -93,6 +93,6 @@ async function remove(req, res) {
     console.log(error);
     res.status(400).send(error);
   }
-}
+};
 
 export { findAll, findBySearch, findOne, create, update, remove };

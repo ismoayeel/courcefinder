@@ -1,5 +1,5 @@
 import resursCategory from "../models/resursCategory.model.js";
-import { resursCategoryValidation } from "../validations/resursValidation.js";
+import { resursCategoryUpdate, resursCategoryValidation } from "../validations/resursValidation.js";
 
 const createResursCategoriy = async (req, res) => {
   try {
@@ -41,6 +41,10 @@ const getOneResursCategoriy = async (req, res) => {
 
 const updateResursCategoriy = async (req, res) => {
   try {
+    let { error, value } = resursCategoryUpdate.validate(req.body);
+    if (error) {
+      return res.send(error.details[0].message);
+    }
     await resursCategory.update(req.body, { where: { id: req.params.id } });
     res.send("Reurs muvaffaqiyatli yangilandi");
   } catch (error) {
