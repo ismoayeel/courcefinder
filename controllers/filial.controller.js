@@ -8,7 +8,12 @@ async function findAll(req, res) {
         const pagesize = parseInt(req.query.pagesize) || 10;
         const offset = (page - 1) * pagesize;
 
-        let data = await Filial.findAll({ limit: pagesize, offset: offset })
+        let data = await Filial.findAll({
+            limit: pagesize, offset: offset, include: [
+                { model: Oquvmarkaz, attributes: ['id', 'name', 'image'] },
+                { model: Region, attributes: ['id', 'name'] }
+            ]
+        })
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -27,7 +32,12 @@ async function findBySearch(req, res) {
             }
         });
         console.log(newObj);
-        let data = await Filial.findAll({ where: newObj });
+        let data = await Filial.findAll({
+            where: newObj, include: [
+                { model: Oquvmarkaz, attributes: ['id', 'name'] },
+                { model: Region, attributes: ['id', 'name'] }
+            ]
+        });
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -36,7 +46,12 @@ async function findBySearch(req, res) {
 };
 async function findOne(req, res) {
     try {
-        let data = await Filial.findByPk(req.params.id)
+        let data = await Filial.findByPk(req.params.id, {
+            include: [
+                { model: Oquvmarkaz, attributes: ['id', 'name'] },
+                { model: Region, attributes: ['id', 'name'] }
+            ]
+        })
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -49,7 +64,7 @@ async function create(req, res) {
         if (error) {
             return res.status(400).send(error.details[0].message)
         }
-        await Filial.create(req.body  )
+        await Filial.create(req.body)
         res.status(201).send("created Successfully ✅")
     } catch (error) {
         console.log(error);

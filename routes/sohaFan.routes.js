@@ -6,7 +6,7 @@ import {
   findOne,
   remove,
   update,
-} from "../controllers/sofaFan.controller.js";
+} from "../controllers/sohafan.controller.js";
 
 const sohaFanRoutes = Router();
 
