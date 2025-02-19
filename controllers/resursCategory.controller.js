@@ -25,6 +25,26 @@ const getAllResursCategoriy = async (req, res) => {
   }
 };
 
+async function findBySearchResursCategory(req, res) {
+  try {
+    let query = req.query;
+    let keys = Object.keys(query);
+    let values = Object.values(query);
+    let newObj = {};
+    values.forEach((val, index) => {
+      if (val) {
+        newObj[keys[index]] = val;
+      }
+    });
+    console.log(newObj);
+    let data = await resursCategory.findAll({ where: newObj });
+    res.send(data);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+}
+
 const getOneResursCategoriy = async (req, res) => {
   try {
     const { id } = req.params;
@@ -66,4 +86,5 @@ export {
   getOneResursCategoriy,
   updateResursCategoriy,
   deleteResursCategoriy,
+  findBySearchResursCategory,
 };
