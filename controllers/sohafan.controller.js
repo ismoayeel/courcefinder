@@ -1,5 +1,8 @@
-import Sohafan from "../models/sofaFan.model.js";
-import { sohaFanUpdate, sohaFanValidation } from "../validations/resursValidation.js";
+import Sohafan from "../models/sohaFan.model.js";
+import {
+  sohaFanUpdate,
+  sohaFanValidation,
+} from "../validations/resursValidation.js";
 
 async function findAll(req, res) {
   try {
@@ -16,7 +19,7 @@ async function findAll(req, res) {
     console.log(error);
     res.status(400).send(error);
   }
-};
+}
 async function findBySearch(req, res) {
   try {
     let query = req.query;
@@ -35,7 +38,7 @@ async function findBySearch(req, res) {
     console.log(error);
     res.status(400).send(error);
   }
-};
+}
 async function findOne(req, res) {
   try {
     let data = await Sohafan.findByPk(req.params.id);
@@ -44,11 +47,11 @@ async function findOne(req, res) {
     console.log(error);
     res.status(400).send(error);
   }
-};
+}
 async function create(req, res) {
   try {
     if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
+      return res.status(400).json({ message: "Fayl yuklanmadi" });
     }
     let { filename } = req.file;
     let data = req.body;
@@ -64,12 +67,12 @@ async function create(req, res) {
     };
 
     await Sohafan.create(newItem);
-    res.status(201).send("created Successfully ✅");
+    res.status(201).send("Muvaffaqiyatli yaratildi");
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
   }
-};
+}
 async function update(req, res) {
   try {
     let { error, value } = sohaFanUpdate.validate(req.body);
@@ -79,20 +82,20 @@ async function update(req, res) {
     await Sohafan.update(req.body, {
       where: { id: req.params.id },
     });
-    res.send("updated successfully ✅");
+    res.send("Muvaffaqiyatli yangilandi");
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
   }
-};
+}
 async function remove(req, res) {
   try {
     await Sohafan.destroy({ where: { id: req.params.id } });
-    res.send("deleted successfully ✅");
+    res.send("Muvaffaqiyatli o'chirildi");
   } catch (error) {
     console.log(error);
     res.status(400).send(error);
   }
-};
+}
 
 export { findAll, findBySearch, findOne, create, update, remove };
