@@ -1,5 +1,10 @@
+import Resurs from "../models/resurs.model.js";
+import resursCategory from "../models/resursCategory.model.js";
 import resursItem from "../models/resursItem.model.js";
-import { resursItemUpdate, resursItemvalidation } from "../validations/resursValidation.js";
+import {
+  resursItemUpdate,
+  resursItemvalidation,
+} from "../validations/resursValidation.js";
 
 const createResursItem = async (req, res) => {
   try {
@@ -17,7 +22,18 @@ const createResursItem = async (req, res) => {
 
 const getAllResursItem = async (req, res) => {
   try {
-    const resursList = await resursItem.findAll();
+    const resursList = await resursItem.findAll({
+      include: [
+        {
+          model: Resurs,
+          attributes: ["id", "name", "media", "desc"],
+        },
+        {
+          model: resursCategory,
+          attributes: ["id", "name", "image"],
+        },
+      ],
+    });
     res.status(200).json(resursList);
   } catch (error) {
     console.error(error);
@@ -28,16 +44,86 @@ const getAllResursItem = async (req, res) => {
 async function findBySearchResursItem(req, res) {
   try {
     let query = req.query;
-    let keys = Object.keys(query);
-    let values = Object.values(query);
     let newObj = {};
-    values.forEach((val, index) => {
-      if (val) {
-        newObj[keys[index]] = val;
+    let order = [];
+
+    let sortOrder = null;
+    let createdAtOrder = "DESC";
+
+    if (query.order) {
+      if (query.order.toLowerCase() == "asc") {
+        sortOrder = "ASC";
+      } else if (query.order.toLowerCase() == "desc") {
+        sortOrder = "DESC";
+      }
+    }
+
+    if (query.createdAt) {
+      if (query.createdAt.toLowerCase() == "asc") {
+        createdAtOrder = "ASC";
+      } else if (query.createdAt.toLowerCase() == "desc") {
+        createdAtOrder = "DESC";
+      }
+    }
+
+    Object.keys(query).forEach((key) => {
+      if (
+        key != "order" &&
+        key != "createdAt" &&
+        key != "limit" &&
+        key != "page"
+      ) {
+        newObj[key] = { [Op.like]: `%${query[key]}%` };
       }
     });
-    console.log(newObj);
-    let data = await resursItem.findAll({ where: newObj });
+
+    if (sortOrder != null) {
+      order.push(["fullname", sortOrder]);
+    }
+
+    order.push(["createdAt", createdAtOrder]);
+
+    let limit = 10;
+    let page = 1;
+    let offset = 0;
+
+    if (query.limit) {
+      let parsedLimit = parseInt(query.limit);
+      if (!isNaN(parsedLimit) && parsedLimit > 0) {
+        limit = parsedLimit;
+      }
+    }
+
+    if (query.page) {
+      let parsedPage = parseInt(query.page);
+      if (!isNaN(parsedPage) && parsedPage > 0) {
+        page = parsedPage;
+      }
+    }
+
+    offset = (page - 1) * limit;
+
+    console.log("Query:", newObj);
+    console.log("Order By:", order);
+    console.log("Pagination:", { limit, offset });
+
+    let data = await resursItem.findAll({
+      where: newObj,
+      order: order,
+      limit: limit,
+      offset: offset,
+      include: [
+        {
+          model: Resurs,
+          attributes: ["id", "name", "media", "desc"],
+        },
+        {
+          model: resursCategory,
+          attributes: ["id", "name", "image"],
+        },
+      ],
+    });
+
     res.send(data);
   } catch (error) {
     console.log(error);
@@ -48,7 +134,18 @@ async function findBySearchResursItem(req, res) {
 const getOneResursItem = async (req, res) => {
   try {
     const { id } = req.params;
-    const resurs = await resursItem.findByPk(id);
+    const resurs = await resursItem.findByPk(id, {
+      include: [
+        {
+          model: Resurs,
+          attributes: ["id", "name", "media", "desc"],
+        },
+        {
+          model: resursCategory,
+          attributes: ["id", "name", "image"],
+        },
+      ],
+    });
     if (!resurs) {
       return res.status(404).json({ message: "Resurs topilmadi" });
     }
