@@ -1,5 +1,5 @@
 import resursItem from "../models/resursItem.model.js";
-import { resursItemvalidation } from "../validations/resursValidation.js";
+import { resursItemUpdate, resursItemvalidation } from "../validations/resursValidation.js";
 
 const createResursItem = async (req, res) => {
   try {
@@ -25,6 +25,26 @@ const getAllResursItem = async (req, res) => {
   }
 };
 
+async function findBySearchResursItem(req, res) {
+  try {
+    let query = req.query;
+    let keys = Object.keys(query);
+    let values = Object.values(query);
+    let newObj = {};
+    values.forEach((val, index) => {
+      if (val) {
+        newObj[keys[index]] = val;
+      }
+    });
+    console.log(newObj);
+    let data = await resursItem.findAll({ where: newObj });
+    res.send(data);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+}
+
 const getOneResursItem = async (req, res) => {
   try {
     const { id } = req.params;
@@ -41,6 +61,10 @@ const getOneResursItem = async (req, res) => {
 
 const updateResursItem = async (req, res) => {
   try {
+    let { error, value } = resursItemUpdate.validate(req.body);
+    if (error) {
+      return res.send(error.details[0].message);
+    }
     await resursItem.update(req.body, { where: { id: req.params.id } });
     res.send("Reurs muvaffaqiyatli yangilandi");
   } catch (error) {
@@ -66,4 +90,5 @@ export {
   getOneResursItem,
   updateResursItem,
   deleteResursItem,
+  findBySearchResursItem,
 };

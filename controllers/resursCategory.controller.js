@@ -1,5 +1,5 @@
 import resursCategory from "../models/resursCategory.model.js";
-import { resursCategoryValidation } from "../validations/resursValidation.js";
+import { resursCategoryUpdate, resursCategoryValidation } from "../validations/resursValidation.js";
 
 const createResursCategoriy = async (req, res) => {
   try {
@@ -25,6 +25,26 @@ const getAllResursCategoriy = async (req, res) => {
   }
 };
 
+async function findBySearchResursCategory(req, res) {
+  try {
+    let query = req.query;
+    let keys = Object.keys(query);
+    let values = Object.values(query);
+    let newObj = {};
+    values.forEach((val, index) => {
+      if (val) {
+        newObj[keys[index]] = val;
+      }
+    });
+    console.log(newObj);
+    let data = await resursCategory.findAll({ where: newObj });
+    res.send(data);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+}
+
 const getOneResursCategoriy = async (req, res) => {
   try {
     const { id } = req.params;
@@ -41,6 +61,10 @@ const getOneResursCategoriy = async (req, res) => {
 
 const updateResursCategoriy = async (req, res) => {
   try {
+    let { error, value } = resursCategoryUpdate.validate(req.body);
+    if (error) {
+      return res.send(error.details[0].message);
+    }
     await resursCategory.update(req.body, { where: { id: req.params.id } });
     res.send("Reurs muvaffaqiyatli yangilandi");
   } catch (error) {
@@ -66,4 +90,5 @@ export {
   getOneResursCategoriy,
   updateResursCategoriy,
   deleteResursCategoriy,
+  findBySearchResursCategory,
 };

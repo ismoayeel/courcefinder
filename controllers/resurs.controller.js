@@ -1,5 +1,5 @@
 import Resurs from "../models/resurs.model.js";
-import { resursValidation } from "../validations/resursValidation.js";
+import { resursUpdate, resursValidation } from "../validations/resursValidation.js";
 
 const createResurs = async (req, res) => {
   try {
@@ -29,6 +29,26 @@ const getAllResurs = async (req, res) => {
   }
 };
 
+async function findBySearchResurs(req, res) {
+  try {
+    let query = req.query;
+    let keys = Object.keys(query);
+    let values = Object.values(query);
+    let newObj = {};
+    values.forEach((val, index) => {
+      if (val) {
+        newObj[keys[index]] = val;
+      }
+    });
+    console.log(newObj);
+    let data = await Resurs.findAll({ where: newObj });
+    res.send(data);
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error);
+  }
+}
+
 const getOneResurs = async (req, res) => {
   try {
     const { id } = req.params;
@@ -45,7 +65,11 @@ const getOneResurs = async (req, res) => {
 
 const updateResurs = async (req, res) => {
   try {
-    let data = await Resurs.update(req.body, { where: { id: req.params.id } });
+    let { error, value } = resursUpdate.validate(req.body);
+    if (error) {
+      return res.send(error.details[0].message);
+    }
+    await Resurs.update(req.body, { where: { id: req.params.id } });
     res.send("Reurs muvaffaqiyatli yangilandi");
   } catch (error) {
     console.error(error);
@@ -64,4 +88,11 @@ const deleteResurs = async (req, res) => {
   }
 };
 
-export { createResurs, getAllResurs, getOneResurs, updateResurs, deleteResurs };
+export {
+  createResurs,
+  getAllResurs,
+  getOneResurs,
+  updateResurs,
+  deleteResurs,
+  findBySearchResurs,
+};

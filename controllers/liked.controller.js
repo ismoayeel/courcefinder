@@ -7,7 +7,12 @@ async function findAll(req, res) {
         const pagesize = parseInt(req.query.pagesize) || 10;
         const offset = (page - 1) * pagesize;
 
-        let data = await Liked.findAll({ limit: pagesize, offset: offset })
+        let data = await Liked.findAll({
+            limit: pagesize, offset: offset, include: [
+                { model: User, attributes: ['id', 'fullname', 'image', 'email', 'phone', 'role'] },
+                { model: Oquvmarkaz, attributes: ['id', 'name', 'image'] }
+            ]
+        })
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -26,7 +31,12 @@ async function findBySearch(req, res) {
             }
         });
         console.log(newObj);
-        let data = await Liked.findAll({ where: newObj });
+        let data = await Liked.findAll({
+            where: newObj, include: [
+                { model: User, attributes: ['id', 'fullname', 'image', 'email', 'phone', 'role'] },
+                { model: Oquvmarkaz, attributes: ['id', 'name', 'image'] }
+            ]
+        });
         res.send(data)
     } catch (error) {
         console.log(error);
@@ -35,7 +45,12 @@ async function findBySearch(req, res) {
 };
 async function findOne(req, res) {
     try {
-        let data = await Liked.findByPk(req.params.id)
+        let data = await Liked.findByPk(req.params.id, {
+            include: [
+                { model: User, attributes: ['id', 'fullname', 'image', 'email', 'phone', 'role'] },
+                { model: Oquvmarkaz, attributes: ['id', 'name'] }
+            ]
+        })
         res.send(data)
     } catch (error) {
         console.log(error);
