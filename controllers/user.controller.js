@@ -5,13 +5,13 @@ import bcrypt from "bcrypt"
 import dotenv from "dotenv"
 import SendMail from "../config/nodemailer.js";
 import jwt from "jsonwebtoken"
+import { promises as fs } from "fs"
 
 
 dotenv.config()
 
 totp.options = { step: 500, digits: 6 };
 
-let emailstore = {}
 
 async function sendOtp(req, res) {
     try {
@@ -26,28 +26,20 @@ async function sendOtp(req, res) {
     }
 }
 
-async function verfyOtp(req, res) {
-    try {
-        const { email, otp } = req.body
-
-
-        const checkOtp = totp.check(otp, `${process.env.OTPKEY}${email}`);
-        if (!checkOtp) {
-            return res.status(400).send({ message: "invalid otp" })
-        }
-        res.status(200).send({ message: "OTP verified successfully ✅, You can register now" })
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({ message: error.message })
-    }
-}
 async function register(req, res) {
     try {
+        const { otp } = req.params
         const { error } = registerValidate.validate(req.body);
         if (error) {
             return res.status(400).send({ message: error.details[0].message })
         }
         const { fullname, phone, password, email, role, image } = req.body
+
+        const checkOtp = totp.check(otp, `${process.env.OTPKEY}${email}`);
+        if (!checkOtp) {
+            return res.status(400).send({ message: "Email OTP bilan tasdiqlanmagan" });
+        }
+
         const newUser = await User.findOne({ where: { email } })
         if (newUser) {
             res.status(400).send({ message: "This account already exists" })
@@ -55,12 +47,14 @@ async function register(req, res) {
         }
         const hashPassword = bcrypt.hashSync(password, 7);
         await User.create({ fullname, phone, password: hashPassword, email, role, image })
+
         res.status(201).send({ message: "Register successfully✅" })
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: error.message })
     }
 }
+
 
 async function login(req, res) {
     try {
@@ -73,7 +67,7 @@ async function login(req, res) {
         if (!comparePassword) {
             return res.status(400).send({ message: "Incorrect password" });
         }
-        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+        const token = jwt.sign({ id: user.id, email: user.email, role: user.role, image: user.image }, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
         res.status(200).send({ message: token })
     } catch (error) {
         console.log(error);
@@ -117,6 +111,9 @@ async function update(req, res) {
             return res.status(400).send({ message: error.details[0].message })
         }
         const { fullname, email, role, image, phone, password } = req.body;
+        if (image) {
+            await fs.unlink(`./uploads/${req.user.image}`)
+        }
         const user = await User.findByPk(id);
         if (!user) {
             return res.status(404).send({ message: "User not found" });
@@ -147,4 +144,4 @@ async function remove(req, res) {
     }
 }
 
-export { sendOtp, verfyOtp, register, findAll, findOne, update, remove, login }
+export { sendOtp, register, findAll, findOne, update, remove, login }

@@ -3,13 +3,13 @@ function selfpolice(data) {
         let { id } = req.params;
         let { role } = req.user;
 
-        if(id == req.user.id || data.includes(role)) {
+        if (id == req.user.id || data.includes(role)) {
             next();
             return;
-        } 
+        }
 
-        res.status(405).send({message: 'Not allowed update profile ❗'});
-    }   
+        res.status(405).send({ message: 'Not allowed update profile ❗' });
+    }
 }
 
 export default selfpolice;

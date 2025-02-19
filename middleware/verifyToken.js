@@ -4,8 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function verifytoken(req, res, next) {
-  let header = req.header("Authorization").split(" ");
-  let [ token] = header;
+  let token = req.header("Authorization")
   if (!token) {
     return res.status(404).send({ message: "Token not found ❗" });
   }
@@ -14,7 +13,8 @@ async function verifytoken(req, res, next) {
     req.user = data;
     next();
   } catch (error) {
-    res.status(500).send({error_message: error.message});
+    console.log(error);
+    res.status(500).send({ error_message: error.message });
   }
 }
 
