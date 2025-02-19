@@ -1,4 +1,5 @@
-import Sohafan from "../models/sofaFan.model.js";
+import Sohafan from "../models.sofafan.controller.js";
+
 import {
   sohaFanUpdate,
   sohaFanValidation,

@@ -6,12 +6,12 @@ import {
   findOne,
   remove,
   update,
-} from "../controllers/sohafan.controller.js";
+} from "../controllers/sofaFan.controller.js";
 
 const sohaFanRoutes = Router();
 
 sohaFanRoutes.get("/", findAll);
-sohaFanRoutes.get("/", findBySearch);
+sohaFanRoutes.get("/query", findBySearch);
 sohaFanRoutes.get("/:id", findOne);
 sohaFanRoutes.post("/", create);
 sohaFanRoutes.patch("/:id", update);
