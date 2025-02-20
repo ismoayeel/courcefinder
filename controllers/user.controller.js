@@ -11,13 +11,10 @@ import { registerAdminValidate } from "../validations/userAdmin.validate.js";
 import Comment from "../models/comment.model.js";
 import Oquvmarkaz from "../models/oquvMarkaz.model.js";
 import Resurs from "../models/resurs.model.js";
-import resursCategory from "../models/resursCategory.model.js";
-
 
 dotenv.config()
 
 totp.options = { step: 500, digits: 6 };
-
 
 async function sendOtp(req, res) {
     try {
