@@ -1,5 +1,11 @@
+import Resurs from "../models/resurs.model.js";
+import resursCategory from "../models/resursCategory.model.js";
 import resursItem from "../models/resursItem.model.js";
-import { resursItemUpdate, resursItemvalidation } from "../validations/resursValidation.js";
+import {
+  resursItemUpdate,
+  resursItemvalidation,
+} from "../validations/resursValidation.js";
+import { Op } from "sequelize";
 
 const createResursItem = async (req, res) => {
   try {
@@ -17,7 +23,33 @@ const createResursItem = async (req, res) => {
 
 const getAllResursItem = async (req, res) => {
   try {
-    const resursList = await resursItem.findAll();
+    const page = parseInt(req.query.page) || 1;
+    const pagesize = parseInt(req.query.page) || 10;
+    const offset = (page - 1) * pagesize;
+
+    const resursList = await resursItem.findAll({
+      limit: pagesize,
+      offset: offset,
+      include: [{ model: Resurs }, { model: resursCategory }]
+    });
+    res.status(200).json(resursList);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Resurslarni olishda xatolik" });
+  }
+};
+
+const getAllResursCategoriy = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const pagesize = parseInt(req.query.page) || 10;
+    const offset = (page - 1) * pagesize;
+
+    const resursList = await resursCategory.findAll({
+      limit: pagesize,
+      offset: offset,
+      include: [{ model: Resurs }]
+    });
     res.status(200).json(resursList);
   } catch (error) {
     console.error(error);
@@ -27,28 +59,56 @@ const getAllResursItem = async (req, res) => {
 
 async function findBySearchResursItem(req, res) {
   try {
+    console.log(req.query);
     let query = req.query;
-    let keys = Object.keys(query);
-    let values = Object.values(query);
     let newObj = {};
-    values.forEach((val, index) => {
-      if (val) {
-        newObj[keys[index]] = val;
+    let order = [];
+
+    let sortBy = query.sortBy || "id";
+    let sortOrder = query.order?.toLowerCase() === "desc" ? "DESC" : "ASC";
+
+    let createdAtOrder = query.createdAt?.toLowerCase() === "asc" ? "ASC" : "DESC";
+
+    Object.keys(query).forEach((key) => {
+      if (!["order", "createdAt", "limit", "page", "sortBy"].includes(key)) {
+        newObj[key] = { [Op.like]: `%${query[key]}%` };
       }
     });
-    console.log(newObj);
-    let data = await resursItem.findAll({ where: newObj });
+
+    order.push([sortBy, sortOrder]);
+    if (sortBy !== "createdAt") {
+      order.push(["createdAt", createdAtOrder]);
+    }
+
+    let limit = parseInt(query.limit) || 10;
+    let page = parseInt(query.page) || 1;
+    let offset = (page - 1) * limit;
+
+    console.log("Query:", newObj);
+    console.log("Order By:", order);
+    console.log("Pagination:", { limit, offset });
+
+    let data = await resursItem.findAll({
+      where: newObj,
+      order: order,
+      limit: limit,
+      offset: offset,
+      include: [{ model: Resurs }, { model: resursCategory }]
+    });
+
     res.send(data);
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    console.error("Error:", error);
+    res.status(400).json({ message: "Error occurred", error: error.message });
   }
-}
+};
 
 const getOneResursItem = async (req, res) => {
   try {
     const { id } = req.params;
-    const resurs = await resursItem.findByPk(id);
+    const resurs = await resursItem.findByPk(id, {
+      include: [{ model: Resurs }, { model: resursCategory }]
+    });
     if (!resurs) {
       return res.status(404).json({ message: "Resurs topilmadi" });
     }

@@ -47,4 +47,10 @@ let Oquvmarkaz = sequelize.define("oquvmarkazs", {
     }
 }, { timestamps: true })
 
+User.hasMany(Oquvmarkaz, { foreignKey: "userId" });
+Oquvmarkaz.belongsTo(User, { foreignKey: "userId" });
+
+Oquvmarkaz.belongsTo(Region, { foreignKey: "regionId" });
+Region.hasMany(Oquvmarkaz, { foreignKey: "regionId" });
+
 export default Oquvmarkaz

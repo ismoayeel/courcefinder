@@ -156,7 +156,6 @@ async function findBySearch(req, res) {
     }
 };
 
-
 async function findAll(req, res) {
     try {
         const page = parseInt(req.query.page) || 1;

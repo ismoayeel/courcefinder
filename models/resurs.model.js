@@ -34,4 +34,7 @@ let Resurs = sequelize.define(
   { timestamps: true }
 );
 
+User.hasMany(Resurs, { foreignKey: "userId" });
+Resurs.belongsTo(User, { foreignKey: "userId" });
+
 export default Resurs;

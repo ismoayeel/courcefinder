@@ -27,4 +27,10 @@ let Liked = sequelize.define("liked", {
     }
 }, { timestamps: true })
 
+User.hasMany(Liked, { foreignKey: "userId" });
+Liked.belongsTo(User, { foreignKey: "userId" });
+
+Oquvmarkaz.hasMany(Liked, { foreignKey: "oquvMarkazId" });
+Liked.belongsTo(Oquvmarkaz, { foreignKey: "oquvMarkazId" });
+
 export default Liked
