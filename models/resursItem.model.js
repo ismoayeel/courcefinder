@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db.js";
-import Resurs from "./resurs.model.js";
 import resursCategory from "./resursCategory.model.js";
+import Resurs from "./resurs.model.js";
 
 let resursItem = sequelize.define(
   "resursitem",
@@ -31,7 +31,7 @@ let resursItem = sequelize.define(
   { timestamps: true }
 );
 
-Resurs.belongsToMany(resursCategory, { through: resursItem, foreignKey: "resursId" });
-resursCategory.belongsToMany(Resurs, { through: resursItem, foreignKey: "resursCategoryId" });
+// Resurs.belongsToMany(resursCategory, { through: resursItem, foreignKey: "resursId" });
+// resursCategory.belongsToMany(Resurs, { through: resursItem, foreignKey: "resursCategoryId" });
 
 export default resursItem;

@@ -29,7 +29,7 @@ const filialValidation = joi.object({
 })
 
 const commentValidation = joi.object({
-    userId: joi.number().required(),
+    userId: joi.number().optional(),
     msg: joi.string().required(),
     star: joi.number().min(0).max(10).required(),
     oquvMarkazId: joi.number().required()

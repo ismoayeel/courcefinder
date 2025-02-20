@@ -87,7 +87,6 @@ async function registerAdmin(req, res) {
     }
 }
 
-
 async function login(req, res) {
     try {
         const { email, password } = req.body;
@@ -159,10 +158,24 @@ async function findAll(req, res) {
         const pagesize = parseInt(req.query.pagesize) || 10;
         const offset = (page - 1) * pagesize;
 
-        let user = await User.findAll({
-            limit: pagesize, offset: offset,
-            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
-        })
+        const userId = req.user.id;
+        const userRole = req.user.role;
+
+        let user;
+
+        if (userRole === "admin") {
+            user = await User.findAll({
+                limit: pagesize,
+                offset: offset,
+                include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
+            });
+        } else {
+            user = await User.findAll({
+                where: { id: userId },
+                include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
+            });
+        }
+
         if (!user.length) {
             return res.status(404).send({ message: "User empty" });
         }

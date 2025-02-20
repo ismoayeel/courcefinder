@@ -3,6 +3,7 @@ import Oquvmarkaz from "../models/oquvMarkaz.model.js";
 import User from "../models/user.model.js";
 import { commentValidation } from "../validations/validations.js";
 import { Op } from "sequelize";
+import jwt from "jsonwebtoken"
 
 async function findAll(req, res) {
     try {
@@ -79,6 +80,10 @@ async function findOne(req, res) {
 };
 async function create(req, res) {
     try {
+        let token = req.header("Authorization");
+        let data = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+        req.body.userId = data.id;
         let { error, value } = commentValidation.validate(req.body)
         if (error) {
             return res.status(400).send(error.details[0].message)

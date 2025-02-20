@@ -39,24 +39,6 @@ const getAllResursItem = async (req, res) => {
   }
 };
 
-const getAllResursCategoriy = async (req, res) => {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const pagesize = parseInt(req.query.page) || 10;
-    const offset = (page - 1) * pagesize;
-
-    const resursList = await resursCategory.findAll({
-      limit: pagesize,
-      offset: offset,
-      include: [{ model: Resurs }]
-    });
-    res.status(200).json(resursList);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Resurslarni olishda xatolik" });
-  }
-};
-
 async function findBySearchResursItem(req, res) {
   try {
     console.log(req.query);

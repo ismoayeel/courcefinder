@@ -1,12 +1,12 @@
-import { Sequelize } from "sequelize";
+import { ConnectionTimedOutError, Sequelize } from "sequelize";
 
 let sequelize = new Sequelize({
-  username: "root",
-  password: "",
   host: "localhost",
+  password: "ismoayeel",
+  username: "root",
   database: "coursefinder",
   dialect: "mysql",
-  logging: false,
+  logging: false
 });
 
 export default sequelize;

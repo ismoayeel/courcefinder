@@ -16,7 +16,7 @@ import uploadRoute from "./upload.routes.js";
 
 const mainRoute = Router();
 
-mainRoute.use('/user', userRoute)
+mainRoute.use("/user", userRoute)
 mainRoute.use("/comment", commentRoute)
 mainRoute.use("/filial", filialRoute)
 mainRoute.use("/liked", likedRoute)

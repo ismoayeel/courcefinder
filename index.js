@@ -11,7 +11,7 @@ const options = {
     definition: {
         openapi: "3.1.0",
         info: {
-            title: "OboiShop",
+            title: "CourseFinder",
             version: "0.1.0",
             description:
                 "This is a simple CRUD API application made with Express and documented with Swagger",
@@ -37,9 +37,7 @@ let PORT = process.env.PORT
 
 async function bootstrap() {
     try {
-        await sequelize.authenticate()
-        // await sequelize.sync({ force: true })
-
+        await sequelize.sync({ force: true })
         console.log("db connected");
         app.listen(PORT, () => {
             console.log(`server started on port: ${PORT}`);

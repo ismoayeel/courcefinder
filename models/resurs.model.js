@@ -1,6 +1,8 @@
 import { DataTypes, STRING } from "sequelize";
 import sequelize from "../config/db.js";
 import User from "./user.model.js";
+import resursCategory from "./resursCategory.model.js";
+import resursItem from "./resursItem.model.js";
 
 let Resurs = sequelize.define(
   "resurs",
@@ -36,5 +38,9 @@ let Resurs = sequelize.define(
 
 User.hasMany(Resurs, { foreignKey: "userId" });
 Resurs.belongsTo(User, { foreignKey: "userId" });
+
+// Many-to-many bog'lanish (Resurs va ResursCategory)
+// Resurs.belongsToMany(resursCategory, { through: resursItem });
+// resursCategory.belongsToMany(Resurs, { through: resursItem });
 
 export default Resurs;

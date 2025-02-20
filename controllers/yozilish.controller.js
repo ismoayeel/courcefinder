@@ -1,3 +1,4 @@
+import Oquvmarkaz from "../models/oquvMarkaz.model.js";
 import User from "../models/user.model.js";
 import Yonalish from "../models/yonalish.model.js";
 import Yozilish from "../models/yozilish.model.js";
@@ -14,7 +15,7 @@ async function findAll(req, res) {
         let data = await Yozilish.findAll({
             limit: pagesize,
             offset: offset,
-            include: [{ model: User }, { model: Yonalish }]
+            include: [{ model: User }, { model: Yonalish }, {model: Oquvmarkaz}]
         })
         res.send(data)
     } catch (error) {
@@ -58,7 +59,7 @@ async function findBySearch(req, res) {
             order: order,
             limit: limit,
             offset: offset,
-            include: [{ model: User }, { model: Yonalish }]
+            include: [{ model: User }, { model: Yonalish }, {model: Oquvmarkaz}]
         });
 
         res.send(data);
@@ -70,7 +71,7 @@ async function findBySearch(req, res) {
 async function findOne(req, res) {
     try {
         let data = await Yozilish.findByPk(req.params.id, {
-            include: [{ model: User }, { model: Yonalish }]
+            include: [{ model: User }, { model: Yonalish }, {model: Oquvmarkaz}]
         })
         res.send(data)
     } catch (error) {

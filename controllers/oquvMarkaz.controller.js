@@ -7,6 +7,7 @@ import User from "../models/user.model.js";
 import { oquvMarkazUpdate } from "../validations/updateValidations.js";
 import { oquvMarkazValidation } from "../validations/validations.js";
 import { Op } from "sequelize";
+import Yozilish from "../models/yozilish.model.js";
 
 async function findAll(req, res) {
     try {
@@ -16,7 +17,7 @@ async function findAll(req, res) {
 
         let data = await Oquvmarkaz.findAndCountAll({
             limit: pagesize, offset: offset,
-            include: [{ model: User }, { model: Region }, { model: Filial }, { model: Comment }, { model: Liked }]
+            include: [{ model: User }, { model: Region }, { model: Filial }, { model: Comment }, { model: Liked }, { model: Yozilish }]
         });
         res.send(data)
     } catch (error) {
@@ -60,7 +61,7 @@ async function findBySearch(req, res) {
             order: order,
             limit: limit,
             offset: offset,
-            include: [{ model: User }, { model: Region }]
+            include: [{ model: User }, { model: Region }, { model: Filial }, { model: Comment }, { model: Liked }, { model: Yozilish }]
         });
 
         res.send(data);
@@ -72,7 +73,7 @@ async function findBySearch(req, res) {
 async function findOne(req, res) {
     try {
         let data = await Oquvmarkaz.findByPk(req.params.id, {
-            include: [{ model: User }, { model: Region }]
+            include: [{ model: User }, { model: Region }, { model: Filial }, { model: Comment }, { model: Liked }, { model: Yozilish }]
         })
         res.send(data)
     } catch (error) {
