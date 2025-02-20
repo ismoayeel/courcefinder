@@ -146,7 +146,7 @@ async function findBySearch(req, res) {
             order: order,
             limit: limit,
             offset: offset,
-            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }, { model: resursCategory }]
+            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
         });
 
         res.send(data);
@@ -164,7 +164,7 @@ async function findAll(req, res) {
 
         let user = await User.findAll({
             limit: pagesize, offset: offset,
-            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }, { model: resursCategory }]
+            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
         })
         if (!user.length) {
             return res.status(404).send({ message: "User empty" });
@@ -178,7 +178,7 @@ async function findAll(req, res) {
 async function findOne(req, res) {
     try {
         const user = await User.findByPk(req.params.id, {
-            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }, { model: resursCategory }]
+            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
         });
         if (!user) {
             return res.status(404).send({ message: "User not found" });
