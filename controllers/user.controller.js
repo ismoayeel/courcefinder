@@ -7,6 +7,11 @@ import SendMail from "../config/nodemailer.js";
 import jwt from "jsonwebtoken"
 import { promises as fs } from "fs"
 import { Op } from "sequelize";
+import { registerAdminValidate } from "../validations/userAdmin.validate.js";
+import Comment from "../models/comment.model.js";
+import Oquvmarkaz from "../models/oquvMarkaz.model.js";
+import Resurs from "../models/resurs.model.js";
+import resursCategory from "../models/resursCategory.model.js";
 
 
 dotenv.config()
@@ -56,6 +61,35 @@ async function register(req, res) {
     }
 }
 
+async function registerAdmin(req, res) {
+    try {
+        const { otp } = req.params
+        const { error } = registerAdminValidate.validate(req.body);
+        if (error) {
+            return res.status(400).send({ message: error.details[0].message })
+        }
+        const { fullname, phone, password, email, role, image } = req.body
+
+        const checkOtp = totp.check(otp, `${process.env.OTPKEY}${email}`);
+        if (!checkOtp) {
+            return res.status(400).send({ message: "Email OTP bilan tasdiqlanmagan" });
+        }
+
+        const newUser = await User.findOne({ where: { email } })
+        if (newUser) {
+            res.status(400).send({ message: "This account already exists" })
+            return
+        }
+        const hashPassword = bcrypt.hashSync(password, 7);
+        await User.create({ fullname, phone, password: hashPassword, email, role, image })
+
+        res.status(201).send({ message: "Register successfully✅" })
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message })
+    }
+}
+
 
 async function login(req, res) {
     try {
@@ -78,62 +112,32 @@ async function login(req, res) {
 
 async function findBySearch(req, res) {
     try {
+        console.log(req.query);
         let query = req.query;
         let newObj = {};
         let order = [];
 
-        let sortOrder = null;
-        let createdAtOrder = "DESC";
+        let sortBy = query.sortBy || "id";
+        let sortOrder = query.order?.toLowerCase() === "desc" ? "DESC" : "ASC";
 
-        if (query.order) {
-            if (query.order.toLowerCase() == "asc") {
-                sortOrder = "ASC";
-            } else if (query.order.toLowerCase() == "desc") {
-                sortOrder = "DESC";
-            }
-        }
-
-        if (query.createdAt) {
-            if (query.createdAt.toLowerCase() == "asc") {
-                createdAtOrder = "ASC";
-            } else if (query.createdAt.toLowerCase() == "desc") {
-                createdAtOrder = "DESC";
-            }
-        }
+        let createdAtOrder = query.createdAt?.toLowerCase() === "asc" ? "ASC" : "DESC";
 
         Object.keys(query).forEach((key) => {
-            if (key != "order" && key != "createdAt" && key != "limit" && key != "page") {
+            if (!["order", "createdAt", "limit", "page", "sortBy"].includes(key)) {
                 newObj[key] = { [Op.like]: `%${query[key]}%` };
             }
         });
 
-        if (sortOrder != null) {
-            order.push(["fullname", sortOrder]);
+        order.push([sortBy, sortOrder]);
+        if (sortBy !== "createdAt") {
+            order.push(["createdAt", createdAtOrder]);
         }
 
-        order.push(["createdAt", createdAtOrder]);
+        let limit = parseInt(query.limit) || 10;
+        let page = parseInt(query.page) || 1;
+        let offset = (page - 1) * limit;
 
-        let limit = 10;
-        let page = 1;
-        let offset = 0;
-
-        if (query.limit) {
-            let parsedLimit = parseInt(query.limit);
-            if (!isNaN(parsedLimit) && parsedLimit > 0) {
-                limit = parsedLimit;
-            }
-        }
-
-        if (query.page) {
-            let parsedPage = parseInt(query.page);
-            if (!isNaN(parsedPage) && parsedPage > 0) {
-                page = parsedPage;
-            }
-        }
-
-        offset = (page - 1) * limit;
-
-        console.log("Query Conditions:", newObj);
+        console.log("Query:", newObj);
         console.log("Order By:", order);
         console.log("Pagination:", { limit, offset });
 
@@ -141,75 +145,17 @@ async function findBySearch(req, res) {
             where: newObj,
             order: order,
             limit: limit,
-            offset: offset
+            offset: offset,
+            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }, { model: resursCategory }]
         });
 
         res.send(data);
     } catch (error) {
-        console.log(error);
-        res.status(400).send(error);
+        console.error("Error:", error);
+        res.status(400).json({ message: "Error occurred", error: error.message });
     }
-}
+};
 
-
-
-// async function findBySearch(req, res) {
-//     try {
-//         let query = req.query;
-//         let newObj = {};
-//         let order = [];
-
-//         // ORDER BY shartlari
-//         let sortOrder = null;
-//         let createdAtOrder = "DESC"; // Default qiymat
-
-//         // Agar "order" berilgan bo‘lsa va faqat "asc" yoki "desc" bo‘lsa, uni ishlatamiz
-//         if (query.order) {
-//             if (query.order.toLowerCase() == "asc") {
-//                 sortOrder = "ASC";
-//             } else if (query.order.toLowerCase() == "desc") {
-//                 sortOrder = "DESC";
-//             }
-//         }
-
-//         // Agar "createdAt" berilgan bo‘lsa va faqat "asc" yoki "desc" bo‘lsa, uni ishlatamiz
-//         if (query.createdAt) {
-//             if (query.createdAt.toLowerCase() == "asc") {
-//                 createdAtOrder = "ASC";
-//             } else if (query.createdAt.toLowerCase() == "desc") {
-//                 createdAtOrder = "DESC";
-//             }
-//         }
-
-//         // Qidiruv shartlarini yaratish
-//         Object.keys(query).forEach((key) => {
-//             if (key !== "order" && key != "createdAt") { // "order" va "createdAt" ni WHERE shartiga qo‘shmaslik
-//                 newObj[key] = { [Op.like]: `%${query[key]}%` };
-//             }
-//         });
-
-//         // Agar "order" berilgan bo‘lsa, fullname bo‘yicha tartiblab qo‘shamiz
-//         if (sortOrder !== null) {
-//             order.push(["fullname", sortOrder]);
-//         }
-
-//         // Har doim "createdAt" bo‘yicha tartiblash qo‘shiladi
-//         order.push(["createdAt", createdAtOrder]);
-
-//         console.log("Query Conditions:", newObj);
-//         console.log("Order By:", order);
-
-//         let data = await User.findAll({ 
-//             where: newObj,
-//             order: order
-//         });
-
-//         res.send(data);
-//     } catch (error) {
-//         console.log(error);
-//         res.status(400).send(error);
-//     }
-// }
 
 async function findAll(req, res) {
     try {
@@ -217,7 +163,10 @@ async function findAll(req, res) {
         const pagesize = parseInt(req.query.pagesize) || 10;
         const offset = (page - 1) * pagesize;
 
-        let user = await User.findAll({ limit: pagesize, offset: offset })
+        let user = await User.findAll({
+            limit: pagesize, offset: offset,
+            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }, { model: resursCategory }]
+        })
         if (!user.length) {
             return res.status(404).send({ message: "User empty" });
         }
@@ -229,7 +178,9 @@ async function findAll(req, res) {
 }
 async function findOne(req, res) {
     try {
-        const user = await User.findByPk(req.params.id);
+        const user = await User.findByPk(req.params.id, {
+            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }, { model: resursCategory }]
+        });
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }
@@ -247,7 +198,8 @@ async function update(req, res) {
         if (error) {
             return res.status(400).send({ message: error.details[0].message })
         }
-        const { fullname, email, role, image, phone, password } = req.body;
+        console.log(req.user);
+        const { fullname, email, image, phone, password } = req.body;
         if (image) {
             await fs.unlink(`./uploads/${req.user.image}`)
         }
@@ -281,4 +233,4 @@ async function remove(req, res) {
     }
 }
 
-export { sendOtp, register, findAll, findOne, update, remove, login, findBySearch }
+export { sendOtp, register, findAll, findOne, update, remove, login, findBySearch, registerAdmin }

@@ -6,7 +6,7 @@ let registerValidate = joi.object({
     email: joi.string().required(),
     phone: joi.string().max(15).required(),
     password: joi.string().required(),
-    role: joi.string().valid("user", "seo", "admin").required()
+    role: joi.string().valid("user", "seo").required()
 })
 
 let userUpdateValid = joi.object({
@@ -14,8 +14,7 @@ let userUpdateValid = joi.object({
     image: joi.string().optional(),
     email: joi.string().optional(),
     phone: joi.string().max(15).optional(),
-    password: joi.string().optional(),
-    role: joi.string().valid("user", "seo", "admin").optional()
+    password: joi.string().optional()
 })
 
 export  {registerValidate, userUpdateValid}

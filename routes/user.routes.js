@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { findAll, findBySearch, findOne, login, register, remove, sendOtp, update } from "../controllers/user.controller.js";
+import { findAll, findBySearch, findOne, login, register, registerAdmin, remove, sendOtp, update } from "../controllers/user.controller.js";
 import verifytoken from "../middleware/verifyToken.js";
 import selfpolice from "../middleware/selfPolice.js";
 import checkRole from "../middleware/rolePolice.js";
@@ -8,6 +8,7 @@ let userRoute = Router()
 
 userRoute.post('/send-otp', sendOtp)
 userRoute.post('/register/:otp', register)
+userRoute.post('/registerAdmin/:otp', registerAdmin)
 userRoute.post('/login', login)
 
 userRoute.get("/:search", findBySearch)
