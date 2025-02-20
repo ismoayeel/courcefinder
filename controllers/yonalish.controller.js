@@ -2,6 +2,7 @@ import Sohafan from "../models/sofaFan.model.js";
 import Yonalish from "../models/yonalish.model.js";
 import { yonalishUpdate } from "../validations/updateValidations.js";
 import { yonalishValidation } from "../validations/validations.js";
+import { Op } from "sequelize";
 
 async function findAll(req, res) {
     try {
@@ -10,12 +11,9 @@ async function findAll(req, res) {
         const offset = (page - 1) * pagesize;
 
         let data = await Yonalish.findAll({
-            limit: pagesize, offset: offset, include: [
-                {
-                    model: Sohafan,
-                    attributes: ['id', 'name', 'image'],
-                },
-            ]
+            limit: pagesize,
+            offset: offset,
+            include: [{ model: Sohafan }]
         })
         res.send(data)
     } catch (error) {
@@ -25,60 +23,30 @@ async function findAll(req, res) {
 };
 async function findBySearch(req, res) {
     try {
+        console.log(req.query);
         let query = req.query;
         let newObj = {};
         let order = [];
 
-        let sortOrder = null;
-        let createdAtOrder = "DESC";
+        let sortBy = query.sortBy || "id";
+        let sortOrder = query.order?.toLowerCase() === "desc" ? "DESC" : "ASC";
 
-        if (query.order) {
-            if (query.order.toLowerCase() == "asc") {
-                sortOrder = "ASC";
-            } else if (query.order.toLowerCase() == "desc") {
-                sortOrder = "DESC";
-            }
-        }
-
-        if (query.createdAt) {
-            if (query.createdAt.toLowerCase() == "asc") {
-                createdAtOrder = "ASC";
-            } else if (query.createdAt.toLowerCase() == "desc") {
-                createdAtOrder = "DESC";
-            }
-        }
+        let createdAtOrder = query.createdAt?.toLowerCase() === "asc" ? "ASC" : "DESC";
 
         Object.keys(query).forEach((key) => {
-            if (key != "order" && key != "createdAt" && key != "limit" && key != "page") {
+            if (!["order", "createdAt", "limit", "page", "sortBy"].includes(key)) {
                 newObj[key] = { [Op.like]: `%${query[key]}%` };
             }
         });
 
-        if (sortOrder != null) {
-            order.push(["fullname", sortOrder]);
+        order.push([sortBy, sortOrder]);
+        if (sortBy !== "createdAt") {
+            order.push(["createdAt", createdAtOrder]);
         }
 
-        order.push(["createdAt", createdAtOrder]);
-
-        let limit = 10;
-        let page = 1;
-        let offset = 0;
-
-        if (query.limit) {
-            let parsedLimit = parseInt(query.limit);
-            if (!isNaN(parsedLimit) && parsedLimit > 0) {
-                limit = parsedLimit;
-            }
-        }
-
-        if (query.page) {
-            let parsedPage = parseInt(query.page);
-            if (!isNaN(parsedPage) && parsedPage > 0) {
-                page = parsedPage;
-            }
-        }
-
-        offset = (page - 1) * limit;
+        let limit = parseInt(query.limit) || 10;
+        let page = parseInt(query.page) || 1;
+        let offset = (page - 1) * limit;
 
         console.log("Query:", newObj);
         console.log("Order By:", order);
@@ -89,29 +57,19 @@ async function findBySearch(req, res) {
             order: order,
             limit: limit,
             offset: offset,
-            include: [
-                {
-                    model: Sohafan,
-                    attributes: ['id', 'name', 'image'],
-                },
-            ]
+            include: [{ model: Sohafan }]
         });
 
         res.send(data);
     } catch (error) {
-        console.log(error);
-        res.status(400).send(error);
+        console.error("Error:", error);
+        res.status(400).json({ message: "Error occurred", error: error.message });
     }
 };
 async function findOne(req, res) {
     try {
         let data = await Yonalish.findByPk(req.params.id, {
-            include: [
-                {
-                    model: Sohafan,
-                    attributes: ['id', 'name', 'image'],
-                },
-            ]
+            include: [{ model: Sohafan }]
         })
         res.send(data)
     } catch (error) {

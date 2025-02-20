@@ -10,7 +10,7 @@ userRoute.post('/send-otp', sendOtp)
 userRoute.post('/register/:otp', register)
 userRoute.post('/login', login)
 
-userRoute.get("/:search", findBySearch)
+userRoute.get("/query", findBySearch)
 
 userRoute.get('/', verifytoken, checkRole(["admin"]), findAll)
 userRoute.get('/:id', verifytoken, selfpolice(["admin", "seo", "user"]), findOne)
@@ -18,4 +18,3 @@ userRoute.patch('/:id', verifytoken, selfpolice(['admin']), update)
 userRoute.delete('/:id', verifytoken, checkRole(["admin", "seo"]), remove)
 
 export default userRoute
-

@@ -27,4 +27,7 @@ let Oquvmarkazyonalish = sequelize.define("oquvmarkazyonalish", {
     },
 }, { timestamps: true })
 
+Yonalish.belongsToMany(Oquvmarkaz, { through: Oquvmarkazyonalish, foreignKey: "yonalishId" });
+Oquvmarkaz.belongsToMany(Yonalish, { through: Oquvmarkazyonalish, foreignKey: "oquvMarkazId" });
+
 export default Oquvmarkazyonalish

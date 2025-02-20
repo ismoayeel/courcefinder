@@ -43,4 +43,10 @@ let Filial = sequelize.define("filials", {
     },
 }, { timestamps: true })
 
+Filial.belongsTo(Region, { foreignKey: "regionId" })
+Region.hasMany(Filial, { foreignKey: "regionId" })
+
+Oquvmarkaz.hasMany(Filial, { foreignKey: "oquvMarkazId" });
+Filial.belongsTo(Oquvmarkaz, { foreignKey: "oquvMarkazId" });
+
 export default Filial

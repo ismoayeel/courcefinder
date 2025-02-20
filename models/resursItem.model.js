@@ -31,4 +31,7 @@ let resursItem = sequelize.define(
   { timestamps: true }
 );
 
+Resurs.belongsToMany(resursCategory, { through: resursItem, foreignKey: "resursId" });
+resursCategory.belongsToMany(Resurs, { through: resursItem, foreignKey: "resursCategoryId" });
+
 export default resursItem;

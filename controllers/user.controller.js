@@ -108,7 +108,7 @@ async function findBySearch(req, res) {
         });
 
         if (sortOrder != null) {
-            order.push(["fullname", sortOrder]);
+            order.push(["id", sortOrder]);
         }
 
         order.push(["createdAt", createdAtOrder]);
@@ -150,66 +150,6 @@ async function findBySearch(req, res) {
         res.status(400).send(error);
     }
 }
-
-
-
-// async function findBySearch(req, res) {
-//     try {
-//         let query = req.query;
-//         let newObj = {};
-//         let order = [];
-
-//         // ORDER BY shartlari
-//         let sortOrder = null;
-//         let createdAtOrder = "DESC"; // Default qiymat
-
-//         // Agar "order" berilgan bo‘lsa va faqat "asc" yoki "desc" bo‘lsa, uni ishlatamiz
-//         if (query.order) {
-//             if (query.order.toLowerCase() == "asc") {
-//                 sortOrder = "ASC";
-//             } else if (query.order.toLowerCase() == "desc") {
-//                 sortOrder = "DESC";
-//             }
-//         }
-
-//         // Agar "createdAt" berilgan bo‘lsa va faqat "asc" yoki "desc" bo‘lsa, uni ishlatamiz
-//         if (query.createdAt) {
-//             if (query.createdAt.toLowerCase() == "asc") {
-//                 createdAtOrder = "ASC";
-//             } else if (query.createdAt.toLowerCase() == "desc") {
-//                 createdAtOrder = "DESC";
-//             }
-//         }
-
-//         // Qidiruv shartlarini yaratish
-//         Object.keys(query).forEach((key) => {
-//             if (key !== "order" && key != "createdAt") { // "order" va "createdAt" ni WHERE shartiga qo‘shmaslik
-//                 newObj[key] = { [Op.like]: `%${query[key]}%` };
-//             }
-//         });
-
-//         // Agar "order" berilgan bo‘lsa, fullname bo‘yicha tartiblab qo‘shamiz
-//         if (sortOrder !== null) {
-//             order.push(["fullname", sortOrder]);
-//         }
-
-//         // Har doim "createdAt" bo‘yicha tartiblash qo‘shiladi
-//         order.push(["createdAt", createdAtOrder]);
-
-//         console.log("Query Conditions:", newObj);
-//         console.log("Order By:", order);
-
-//         let data = await User.findAll({ 
-//             where: newObj,
-//             order: order
-//         });
-
-//         res.send(data);
-//     } catch (error) {
-//         console.log(error);
-//         res.status(400).send(error);
-//     }
-// }
 
 async function findAll(req, res) {
     try {

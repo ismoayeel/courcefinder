@@ -10,11 +10,12 @@ const oquvMarkazValidation = joi.object({
     filialSoni: joi.number().required(),
     address: joi.string().required(),
     location: joi.string().required(),
-    regionId: joi.number().required()
+    regionId: joi.number().required(),
+    image: joi.string().required()
 })
 
 const likedValidation = joi.object({
-    userId: joi.number().required(),
+    userId: joi.number().optional(),
     oquvMarkazId: joi.number().required()
 })
 
@@ -23,7 +24,8 @@ const filialValidation = joi.object({
     regionId: joi.number().required(),
     name: joi.string().required(),
     address: joi.string().required(),
-    location: joi.string().required()
+    location: joi.string().required(),
+    image: joi.string().required()
 })
 
 const commentValidation = joi.object({

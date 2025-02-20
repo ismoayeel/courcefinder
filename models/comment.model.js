@@ -35,4 +35,10 @@ let Comment = sequelize.define("comments", {
     }
 }, { timestamps: true })
 
+User.hasMany(Comment, { foreignKey: "userId" });
+Comment.belongsTo(User, { foreignKey: "userId" });
+
+Oquvmarkaz.hasMany(Comment, { foreignKey: "oquvMarkazId" });
+Comment.belongsTo(Oquvmarkaz, { foreignKey: "oquvMarkazId" });
+
 export default Comment
