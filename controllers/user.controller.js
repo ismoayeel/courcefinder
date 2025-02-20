@@ -1,5 +1,5 @@
 import { totp } from "otplib";
-import { registerValidate, userUpdateValid } from "../validations/user.validate.js";
+import { emailValid, registerValidate, userUpdateValid } from "../validations/user.validate.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
@@ -18,6 +18,10 @@ totp.options = { step: 500, digits: 6 };
 
 async function sendOtp(req, res) {
     try {
+        const { error } = emailValid.validate(req.body);
+        if (error) {
+            return res.status(400).send({ message: error.details[0].message })
+        }
         const { email } = req.body;
 
         const otp = totp.generate(`${process.env.OTPKEY}${email}`)
@@ -87,6 +91,40 @@ async function registerAdmin(req, res) {
     }
 }
 
+async function resetPassword(req, res) {
+    try {
+        const { email, otp, newPassword } = req.body;
+
+        const user = await User.findOne({ where: { email } });
+        if (!user) {
+            return res.status(404).send({ message: "Bunday email mavjud emas" });
+        }
+
+        if (!otp && !newPassword) {
+            const generatedOtp = totp.generate(`${process.env.OTPKEY}${email}`);
+            await SendMail(email, generatedOtp);
+            return res.status(200).send({ message: "Parolni tiklash uchun OTP emailga yuborildi" });
+        }
+
+        if (otp && newPassword) {
+            const isValidOtp = totp.check(otp, `${process.env.OTPKEY}${email}`);
+            if (!isValidOtp) {
+                return res.status(400).send({ message: "Noto'g'ri yoki eskirgan OTP" });
+            }
+
+            const hashPassword = bcrypt.hashSync(newPassword, 7);
+            await User.update({ password: hashPassword }, { where: { email } });
+
+            return res.status(200).send({ message: "Parol muvaffaqiyatli o'zgartirildi ✅" });
+        }
+
+        return res.status(400).send({ message: "Noto'g'ri so'rov parametrlari" });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Serverda xatolik yuz berdi" });
+    }
+}
 
 async function login(req, res) {
     try {
@@ -153,25 +191,67 @@ async function findBySearch(req, res) {
     }
 };
 
+// async function findAll(req, res) {
+//     try {
+//         const page = parseInt(req.query.page) || 1;
+//         const pagesize = parseInt(req.query.pagesize) || 10;
+//         const offset = (page - 1) * pagesize;
+
+//         let user = await User.findAll({
+//             limit: pagesize, offset: offset,
+//             include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
+//         })
+
+
+//         if (!user.length) {
+//             return res.status(404).send({ message: "User empty" });
+//         }
+//         res.status(200).send({ data: user })
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).send({ message: error.message })
+//     }
+// }
+
+
 async function findAll(req, res) {
     try {
         const page = parseInt(req.query.page) || 1;
         const pagesize = parseInt(req.query.pagesize) || 10;
         const offset = (page - 1) * pagesize;
+        const userId = req.user.id;  // Token orqali foydalanuvchi ID sini olish
+        const userRole = req.user.role; // Token orqali foydalanuvchi rolini olish
 
-        let user = await User.findAll({
-            limit: pagesize, offset: offset,
-            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
-        })
-        if (!user.length) {
+        let users;
+
+        if (userRole === "admin") {
+            // Agar admin bo'lsa, barcha userlarni chiqarish
+            users = await User.findAll({
+                limit: pagesize,
+                offset: offset,
+                include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
+            });
+        } else {
+            // Agar oddiy user bo'lsa, faqat o'z ma'lumotlarini chiqarish
+            users = await User.findAll({
+                where: { id: userId },
+                include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
+            });
+        }
+
+        if (!users.length) {
             return res.status(404).send({ message: "User empty" });
         }
-        res.status(200).send({ data: user })
+
+        res.status(200).send({ data: users });
+
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message })
+        res.status(500).send({ message: error.message });
     }
 }
+
+
 async function findOne(req, res) {
     try {
         const user = await User.findByPk(req.params.id, {
@@ -229,4 +309,4 @@ async function remove(req, res) {
     }
 }
 
-export { sendOtp, register, findAll, findOne, update, remove, login, findBySearch, registerAdmin }
+export { sendOtp, register, findAll, findOne, update, remove, login, findBySearch, registerAdmin, resetPassword }
