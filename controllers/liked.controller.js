@@ -79,19 +79,23 @@ async function findOne(req, res) {
 };
 async function create(req, res) {
     try {
-        let token = req.header("Authorization")
+        let token = req.header("Authorization");
         let data = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
-        let { error, value } = likedValidation.validate(req.body)
+        let { error, value } = likedValidation.validate(req.body);
         if (error) {
-            return res.status(400).send(error.details[0].message)
+            return res.status(400).send(error.details[0].message);
         }
-        req.body.userId = data.id
-        await Liked.create(req.body)
-        res.status(201).send("liked Successfully ✅")
+        req.body.userId = data.id;
+        let existingLike = await Liked.findOne({ where: { userId: req.body.userId, oquvMarkazId: req.body.oquvMarkazId } });
+        if (existingLike) {
+            return res.status(400).send("you already liked");
+        }
+        await Liked.create(req.body);
+        res.status(201).send("Liked Successfully ✅");
     } catch (error) {
         console.log(error);
-        res.status(500).send(error)
+        res.status(500).send(error);
     }
 };
 async function remove(req, res) {
