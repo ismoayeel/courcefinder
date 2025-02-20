@@ -61,6 +61,8 @@ const oquvmarkazRoute = Router();
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of Oquvmarkaz items.
@@ -137,6 +139,8 @@ oquvmarkazRoute.get("/", findAll);
  *         schema:
  *           type: string
  *           default: "ASC"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Returns a filtered list of Oquvmarkaz items.
@@ -161,6 +165,8 @@ oquvmarkazRoute.get("/query", findBySearch);
  *         schema:
  *           type: integer
  *           example: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: The Oquvmarkaz object.
@@ -206,6 +212,8 @@ oquvmarkazRoute.get("/:id", findOne);
  *                 type: integer
  *                 description: The ID of the user who created the Oquvmarkaz.
  *                 example: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: Oquvmarkaz created successfully.
@@ -215,7 +223,7 @@ oquvmarkazRoute.get("/:id", findOne);
  *         description: Internal server error.
  */
 
-oquvmarkazRoute.post("/", create);
+oquvmarkazRoute.post("/", verifytoken, checkRole(["admin", "seo"]), create);
 
 /**
  * @swagger
@@ -251,6 +259,8 @@ oquvmarkazRoute.post("/", create);
  *                 type: string
  *                 description: The updated location of the Oquvmarkaz.
  *                 example: "Samarkand"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Oquvmarkaz updated successfully.
@@ -262,7 +272,7 @@ oquvmarkazRoute.post("/", create);
  *         description: Internal server error.
  */
 
-oquvmarkazRoute.patch("/:id", update);
+oquvmarkazRoute.patch("/:id", verifytoken, checkRole(["admin", "seo"]), update);
 
 /**
  * @swagger
@@ -279,6 +289,8 @@ oquvmarkazRoute.patch("/:id", update);
  *         schema:
  *           type: integer
  *           example: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Oquvmarkaz deleted successfully.
@@ -288,6 +300,6 @@ oquvmarkazRoute.patch("/:id", update);
  *         description: Internal server error.
  */
 
-oquvmarkazRoute.delete("/:id", remove);
+oquvmarkazRoute.delete("/:id", verifytoken, checkRole(["admin", "seo"]), remove);
 
 export default oquvmarkazRoute;

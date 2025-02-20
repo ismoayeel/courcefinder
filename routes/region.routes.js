@@ -29,6 +29,8 @@ import {
   remove,
   update,
 } from "../controllers/region.controller.js";
+import verifytoken from "../middleware/verifyToken.js";
+import checkRole from "../middleware/rolePolice.js";
 
 const regionRoute = Router();
 
@@ -60,6 +62,8 @@ const regionRoute = Router();
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A list of Regions"
@@ -122,6 +126,8 @@ regionRoute.get("/", findAll);
  *         schema:
  *           type: integer
  *           default: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A filtered list of Regions"
@@ -166,6 +172,8 @@ regionRoute.get("/query", findBySearch);
  *         description: "ID of the Region to retrieve"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "The requested Region"
@@ -213,6 +221,8 @@ regionRoute.get("/:id", findOne);
  *               name:
  *                 type: string
  *                 description: "Name of the region"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: "Region created successfully"
@@ -221,7 +231,7 @@ regionRoute.get("/:id", findOne);
  *       500:
  *         description: "Server error"
  */
-regionRoute.post("/", create);
+regionRoute.post("/", verifytoken, checkRole(["admin"]), create);
 
 /**
  * @swagger
@@ -247,6 +257,8 @@ regionRoute.post("/", create);
  *             properties:
  *               name:
  *                 type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "Region updated successfully"
@@ -257,7 +269,7 @@ regionRoute.post("/", create);
  *       500:
  *         description: "Server error"
  */
-regionRoute.patch("/:id", update);
+regionRoute.patch("/:id", verifytoken, checkRole(["admin"]), update);
 
 /**
  * @swagger
@@ -274,6 +286,8 @@ regionRoute.patch("/:id", update);
  *         description: "ID of the Region to delete"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "Region deleted successfully"
@@ -282,6 +296,6 @@ regionRoute.patch("/:id", update);
  *       500:
  *         description: "Server error"
  */
-regionRoute.delete("/:id", remove);
+regionRoute.delete("/:id", verifytoken, checkRole(["admin"]), remove);
 
 export default regionRoute;

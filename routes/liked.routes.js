@@ -26,6 +26,7 @@ import {
   findOne,
   remove,
 } from "../controllers/liked.controller.js";
+import verifytoken from "../middleware/verifyToken.js";
 
 const likedRoute = Router();
 
@@ -43,6 +44,23 @@ const likedRoute = Router();
  *     tags: [Liked]
  *     summary: Get all liked items
  *     description: Fetches a list of all liked items with pagination and associated data (User and Oquvmarkaz).
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         description: The page number for pagination.
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: pagesize
+ *         required: false
+ *         description: The number of items per page.
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of liked items.
@@ -118,6 +136,8 @@ likedRoute.get("/", findAll);
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Returns a list of liked items based on the query parameters.
@@ -142,6 +162,8 @@ likedRoute.get("/query", findBySearch);
  *         schema:
  *           type: integer
  *           example: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: The liked item object.
@@ -171,6 +193,8 @@ likedRoute.get("/:id", findOne);
  *                 type: integer
  *                 description: The ID of the Oquvmarkaz being liked.
  *                 example: 3
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: Liked successfully.
@@ -180,7 +204,7 @@ likedRoute.get("/:id", findOne);
  *         description: Internal server error.
  */
 
-likedRoute.post("/", create);
+likedRoute.post("/", verifytoken, create);
 
 /**
  * @swagger
@@ -197,6 +221,8 @@ likedRoute.post("/", create);
  *         schema:
  *           type: integer
  *           example: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Unliked successfully.
@@ -206,6 +232,6 @@ likedRoute.post("/", create);
  *         description: Internal server error.
  */
 
-likedRoute.delete("/:id", remove);
+likedRoute.delete("/:id", verifytoken, remove);
 
 export default likedRoute;

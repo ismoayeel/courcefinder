@@ -29,6 +29,7 @@ import {
   getOneResursItem,
   updateResursItem,
 } from "../controllers/resursItem.controller.js";
+import verifytoken from "../middleware/verifyToken.js";
 
 const resursItemRoute = express.Router();
 
@@ -60,6 +61,8 @@ const resursItemRoute = express.Router();
  *               resursCategoryId:
  *                 type: integer
  *                 description: "The ID of the resource category"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: "Resource item created successfully"
@@ -68,7 +71,7 @@ const resursItemRoute = express.Router();
  *       500:
  *         description: "Server error"
  */
-resursItemRoute.post("/", createResursItem);
+resursItemRoute.post("/", verifytoken, createResursItem);
 
 /**
  * @swagger
@@ -91,6 +94,8 @@ resursItemRoute.post("/", createResursItem);
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A list of resource items"
@@ -156,6 +161,8 @@ resursItemRoute.get("/", getAllResursItem);
  *         schema:
  *           type: integer
  *           default: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A list of filtered and sorted resource items"
@@ -203,6 +210,8 @@ resursItemRoute.get("/query", findBySearchResursItem);
  *         description: "ID of the resource item to retrieve"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "The requested resource item"
@@ -263,6 +272,8 @@ resursItemRoute.get("/:id", getOneResursItem);
  *               resursCategoryId:
  *                 type: integer
  *                 description: "The ID of the resource category"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "Resource item updated successfully"
@@ -273,7 +284,7 @@ resursItemRoute.get("/:id", getOneResursItem);
  *       500:
  *         description: "Server error"
  */
-resursItemRoute.patch("/:id", updateResursItem);
+resursItemRoute.patch("/:id", verifytoken, updateResursItem);
 
 /**
  * @swagger
@@ -290,6 +301,8 @@ resursItemRoute.patch("/:id", updateResursItem);
  *         description: "ID of the resource item to delete"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "Resource item deleted successfully"
@@ -298,6 +311,6 @@ resursItemRoute.patch("/:id", updateResursItem);
  *       500:
  *         description: "Server error"
  */
-resursItemRoute.delete("/:id", deleteResursItem);
+resursItemRoute.delete("/:id", verifytoken, deleteResursItem);
 
 export default resursItemRoute;

@@ -29,6 +29,8 @@ import {
   remove,
   update,
 } from "../controllers/sohafan.controller.js";
+import verifytoken from "../middleware/verifyToken.js";
+import checkRole from "../middleware/rolePolice.js";
 
 const sohaFanRoutes = Router();
 
@@ -60,6 +62,8 @@ const sohaFanRoutes = Router();
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of SohaFan items
@@ -133,6 +137,8 @@ sohaFanRoutes.get("/", findAll);
  *         schema:
  *           type: integer
  *           default: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of SohaFan items matching the search criteria
@@ -178,6 +184,8 @@ sohaFanRoutes.get("/query", findBySearch);
  *         description: ID of the SohaFan item
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: The SohaFan item
@@ -234,13 +242,15 @@ sohaFanRoutes.get("/:id", findOne);
  *                 enum:
  *                   - soha
  *                   - fan
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: SohaFan item successfully created
  *       400:
  *         description: Bad request (invalid data)
  */
-sohaFanRoutes.post("/", create);
+sohaFanRoutes.post("/", verifytoken, checkRole(["admin", "seo"]), create);
 
 /**
  * @swagger
@@ -273,6 +283,8 @@ sohaFanRoutes.post("/", create);
  *                 enum:
  *                   - soha
  *                   - fan
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: SohaFan item successfully updated
@@ -281,7 +293,7 @@ sohaFanRoutes.post("/", create);
  *       404:
  *         description: SohaFan item not found
  */
-sohaFanRoutes.patch("/:id", update);
+sohaFanRoutes.patch("/:id", verifytoken, checkRole(["admin", "seo"]), update);
 
 /**
  * @swagger
@@ -296,12 +308,14 @@ sohaFanRoutes.patch("/:id", update);
  *         description: ID of the SohaFan item to delete
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: SohaFan item successfully deleted
  *       404:
  *         description: SohaFan item not found
  */
-sohaFanRoutes.delete("/:id", remove);
+sohaFanRoutes.delete("/:id", verifytoken, checkRole(["admin", "seo"]), remove);
 
 export default sohaFanRoutes;

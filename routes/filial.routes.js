@@ -63,6 +63,8 @@ const filialRoute = Router();
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of filials.
@@ -150,6 +152,8 @@ filialRoute.get("/", findAll);
  *         schema:
  *           type: string
  *           default: "ASC"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Returns a list of filials based on the query parameters.
@@ -174,6 +178,8 @@ filialRoute.get("/query", findBySearch);
  *         schema:
  *           type: integer
  *           example: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: The filial object.
@@ -212,6 +218,8 @@ filialRoute.get("/:id", findOne);
  *                 type: string
  *                 format: binary
  *                 description: The image for the filial.
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: Filial created successfully.
@@ -221,7 +229,7 @@ filialRoute.get("/:id", findOne);
  *         description: Internal server error.
  */
 
-filialRoute.post("/", upload.single("image"), create);
+filialRoute.post("/", verifytoken, checkRole(["admin", "seo"]), create);
 
 /**
  * @swagger
@@ -254,6 +262,8 @@ filialRoute.post("/", upload.single("image"), create);
  *               image:
  *                 type: string
  *                 example: "updatedImage.jpg"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Filial updated successfully.
@@ -265,7 +275,7 @@ filialRoute.post("/", upload.single("image"), create);
  *         description: Internal server error.
  */
 
-filialRoute.patch("/:id", update);
+filialRoute.patch("/:id", verifytoken, checkRole(["admin", "seo"]), update);
 
 /**
  * @swagger
@@ -282,6 +292,8 @@ filialRoute.patch("/:id", update);
  *         schema:
  *           type: integer
  *           example: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Filial deleted successfully.
@@ -291,6 +303,6 @@ filialRoute.patch("/:id", update);
  *         description: Internal server error.
  */
 
-filialRoute.delete("/:id", remove);
+filialRoute.delete("/:id", verifytoken, checkRole(["admin", "seo"]), remove);
 
 export default filialRoute;

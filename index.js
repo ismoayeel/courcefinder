@@ -50,3 +50,4 @@ async function bootstrap() {
 bootstrap()
 
 app.use('/image', express.static('./uploads'));
+

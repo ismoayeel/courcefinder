@@ -29,6 +29,8 @@ import {
   getOneResursCategoriy,
   updateResursCategoriy,
 } from "../controllers/resursCategory.controller.js";
+import verifytoken from "../middleware/verifyToken.js";
+import checkRole from "../middleware/rolePolice.js";
 
 const resursCategoryRoute = express.Router();
 
@@ -60,6 +62,8 @@ const resursCategoryRoute = express.Router();
  *               image:
  *                 type: string
  *                 description: "Image associated with the category"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: "Resource category created successfully"
@@ -68,7 +72,7 @@ const resursCategoryRoute = express.Router();
  *       500:
  *         description: "Server error"
  */
-resursCategoryRoute.post("/", createResursCategoriy);
+resursCategoryRoute.post("/", verifytoken, checkRole(["admin"]), createResursCategoriy);
 
 /**
  * @swagger
@@ -91,6 +95,8 @@ resursCategoryRoute.post("/", createResursCategoriy);
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A list of resource categories"
@@ -156,6 +162,8 @@ resursCategoryRoute.get("/", getAllResursCategoriy);
  *         schema:
  *           type: integer
  *           default: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A filtered and sorted list of resource categories"
@@ -203,6 +211,8 @@ resursCategoryRoute.get("/query", findBySearchResursCategory);
  *         description: "ID of the category to retrieve"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "The requested resource category"
@@ -263,6 +273,8 @@ resursCategoryRoute.get("/:id", getOneResursCategoriy);
  *               image:
  *                 type: string
  *                 description: "Image associated with the category"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "Resource category updated successfully"
@@ -273,7 +285,7 @@ resursCategoryRoute.get("/:id", getOneResursCategoriy);
  *       500:
  *         description: "Server error"
  */
-resursCategoryRoute.patch("/:id", updateResursCategoriy);
+resursCategoryRoute.patch("/:id", verifytoken, checkRole(["admin"]), updateResursCategoriy);
 
 /**
  * @swagger
@@ -290,6 +302,8 @@ resursCategoryRoute.patch("/:id", updateResursCategoriy);
  *         description: "ID of the category to delete"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "Resource category deleted successfully"
@@ -298,6 +312,6 @@ resursCategoryRoute.patch("/:id", updateResursCategoriy);
  *       500:
  *         description: "Server error"
  */
-resursCategoryRoute.delete("/:id", deleteResursCategoriy);
+resursCategoryRoute.delete("/:id", verifytoken, checkRole(["admin"]), deleteResursCategoriy);
 
 export default resursCategoryRoute;

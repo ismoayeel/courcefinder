@@ -60,6 +60,8 @@ const oquvMarkazYonalishRoute = Router();
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A list of OquvMarkazYonalish relationships"
@@ -125,6 +127,8 @@ oquvMarkazYonalishRoute.get("/", findAll);
  *         schema:
  *           type: integer
  *           default: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A filtered list of OquvMarkazYonalish relationships"
@@ -172,6 +176,8 @@ oquvMarkazYonalishRoute.get("/query", findBySearch);
  *         description: "ID of the OquvMarkazYonalish relationship to retrieve"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "The requested OquvMarkazYonalish relationship"
@@ -225,6 +231,8 @@ oquvMarkazYonalishRoute.get("/:id", findOne);
  *               yonalishId:
  *                 type: integer
  *                 description: "The ID of the Yonalish"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: "OquvMarkazYonalish created successfully"
@@ -233,7 +241,7 @@ oquvMarkazYonalishRoute.get("/:id", findOne);
  *       500:
  *         description: "Server error"
  */
-oquvMarkazYonalishRoute.post("/", create);
+oquvMarkazYonalishRoute.post("/", verifytoken, checkRole(["admin", "seo"]), create);
 
 /**
  * @swagger
@@ -263,6 +271,8 @@ oquvMarkazYonalishRoute.post("/", create);
  *               yonalishId:
  *                 type: integer
  *                 description: "The ID of the Yonalish"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "OquvMarkazYonalish updated successfully"
@@ -273,7 +283,7 @@ oquvMarkazYonalishRoute.post("/", create);
  *       500:
  *         description: "Server error"
  */
-oquvMarkazYonalishRoute.patch("/:id", update);
+oquvMarkazYonalishRoute.patch("/:id", verifytoken, checkRole(["admin", "seo"]), update);
 
 /**
  * @swagger
@@ -290,6 +300,8 @@ oquvMarkazYonalishRoute.patch("/:id", update);
  *         description: "ID of the OquvMarkazYonalish relationship to delete"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "OquvMarkazYonalish deleted successfully"
@@ -298,6 +310,6 @@ oquvMarkazYonalishRoute.patch("/:id", update);
  *       500:
  *         description: "Server error"
  */
-oquvMarkazYonalishRoute.delete("/:id", remove);
+oquvMarkazYonalishRoute.delete("/:id", verifytoken, checkRole(["admin", "seo"]), remove);
 
 export default oquvMarkazYonalishRoute;

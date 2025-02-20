@@ -29,6 +29,8 @@ import {
   update,
   remove,
 } from "../controllers/yonalish.controller.js";
+import verifytoken from "../middleware/verifyToken.js";
+import checkRole from "../middleware/rolePolice.js";
 
 const yonalishRoute = Router();
 
@@ -60,6 +62,8 @@ const yonalishRoute = Router();
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of Yonalish items
@@ -126,6 +130,8 @@ yonalishRoute.get("/", findAll);
  *         schema:
  *           type: integer
  *           default: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of Yonalish items matching the search criteria
@@ -164,6 +170,8 @@ yonalishRoute.get("/query", findBySearch);
  *         description: ID of the Yonalish item
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: The Yonalish item
@@ -206,13 +214,15 @@ yonalishRoute.get("/:id", findOne);
  *                 type: string
  *               image:
  *                 type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: Yonalish item created successfully
  *       400:
  *         description: Bad request (invalid data)
  */
-yonalishRoute.post("/", create);
+yonalishRoute.post("/", verifytoken, checkRole(["admin", "seo"]), create);
 
 /**
  * @swagger
@@ -238,6 +248,8 @@ yonalishRoute.post("/", create);
  *                 type: string
  *               image:
  *                 type: string
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Yonalish item updated successfully
@@ -246,7 +258,7 @@ yonalishRoute.post("/", create);
  *       404:
  *         description: Yonalish item not found
  */
-yonalishRoute.patch("/:id", update);
+yonalishRoute.patch("/:id", verifytoken, checkRole(["admin", "seo"]), update);
 
 /**
  * @swagger
@@ -261,12 +273,14 @@ yonalishRoute.patch("/:id", update);
  *         description: ID of the Yonalish item to delete
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Yonalish item deleted successfully
  *       404:
  *         description: Yonalish item not found
  */
-yonalishRoute.delete("/:id", remove);
+yonalishRoute.delete("/:id", verifytoken, checkRole(["admin", "seo"]), remove);
 
 export default yonalishRoute;

@@ -14,6 +14,7 @@
 
 import { Router } from "express";
 import upload from "../config/multer.js";
+import verifytoken from "../middleware/verifyToken.js";
 
 const uploadRoute = Router();
 
@@ -41,6 +42,8 @@ const uploadRoute = Router();
  *                 type: string
  *                 format: binary
  *                 description: The image file to be uploaded
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: File uploaded successfully
@@ -63,7 +66,7 @@ const uploadRoute = Router();
  *                   type: string
  *                   example: 'file not found'
  */
-uploadRoute.post("/", upload.single('image'), (req, res) => {
+uploadRoute.post("/", verifytoken, upload.single('image'), (req, res) => {
     if (!req.file) {
         return res.status(400).send({ error: "file not found" });
     }

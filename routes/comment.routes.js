@@ -13,6 +13,7 @@
 
 import { Router } from "express";
 import { create, findAll, findBySearch, findOne, remove } from "../controllers/comment.controller.js";
+import verifytoken from "../middleware/verifyToken.js";
 
 const commentRoute = Router();
 
@@ -44,6 +45,8 @@ const commentRoute = Router();
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A list of Comments"
@@ -91,6 +94,8 @@ commentRoute.get("/", findAll);
  *         schema:
  *           type: integer
  *           default: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A filtered list of Comments"
@@ -120,6 +125,8 @@ commentRoute.get("/query", findBySearch);
  *         description: "ID of the Comment to retrieve"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "The requested Comment"
@@ -132,7 +139,7 @@ commentRoute.get("/query", findBySearch);
  *       500:
  *         description: "Server error"
  */
-commentRoute.get("/:id", findOne);
+commentRoute.get("/:id", verifytoken, findOne);
 
 /**
  * @swagger
@@ -155,6 +162,8 @@ commentRoute.get("/:id", findOne);
  *                 type: integer
  *               oquvMarkazId:
  *                 type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: "Comment created successfully"
@@ -163,7 +172,7 @@ commentRoute.get("/:id", findOne);
  *       500:
  *         description: "Server error"
  */
-commentRoute.post("/", create);
+commentRoute.post("/", verifytoken, create);
 
 /**
  * @swagger
@@ -180,6 +189,8 @@ commentRoute.post("/", create);
  *         description: "ID of the Comment to delete"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "Comment deleted successfully"
@@ -188,6 +199,6 @@ commentRoute.post("/", create);
  *       500:
  *         description: "Server error"
  */
-commentRoute.delete("/:id", remove);
+commentRoute.delete("/:id", verifytoken, remove);
 
 export default commentRoute;

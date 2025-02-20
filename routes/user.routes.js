@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { findAll, findBySearch, findOne, login, register, registerAdmin, remove, sendOtp, update } from "../controllers/user.controller.js";
+import { findAll, findBySearch, findOne, login, register, registerAdmin, remove, resetPassword, sendOtp, update } from "../controllers/user.controller.js";
 import verifytoken from "../middleware/verifyToken.js";
 import selfpolice from "../middleware/selfPolice.js";
 import checkRole from "../middleware/rolePolice.js";
@@ -15,6 +15,7 @@ let userRoute = Router();
  *       scheme: bearer
  *       bearerFormat: JWT
  */
+
 
 /**
  * @swagger
@@ -54,7 +55,7 @@ let userRoute = Router();
  *         description: OTP sent successfully.
  *       500:
  *         description: Internal server error.
- */
+*/
 
 userRoute.post("/send-otp", sendOtp);
 
@@ -108,7 +109,7 @@ userRoute.post("/send-otp", sendOtp);
  *         description: Validation or OTP error.
  *       500:
  *         description: Internal server error.
- */
+*/
 
 userRoute.post("/register/:otp", register);
 
@@ -162,7 +163,7 @@ userRoute.post("/register/:otp", register);
  *         description: Validation or OTP error.
  *       500:
  *         description: Internal server error.
- */
+*/
 
 userRoute.post("/registerAdmin/:otp", registerAdmin);
 
@@ -197,7 +198,7 @@ userRoute.post("/registerAdmin/:otp", registerAdmin);
  *         description: Email not found.
  *       500:
  *         description: Internal server error.
- */
+*/
 
 userRoute.post("/login", login);
 
@@ -246,7 +247,7 @@ userRoute.post("/login", login);
  *         description: Invalid query parameters.
  *       500:
  *         description: Internal server error.
- */
+*/
 
 userRoute.get("/query", findBySearch);
 
@@ -282,7 +283,7 @@ userRoute.get("/query", findBySearch);
  *         description: Internal server error.
  */
 
-userRoute.get("/", verifytoken,  findAll);
+userRoute.get("/", verifytoken, findAll);
 
 /**
  * @swagger
@@ -355,7 +356,7 @@ userRoute.get("/:id", verifytoken, selfpolice(["admin", "seo", "user"]), findOne
  *         description: User not found.
  *       500:
  *         description: Internal server error.
- */
+*/
 
 userRoute.patch("/:id", verifytoken, selfpolice(['admin']), update);
 
@@ -383,8 +384,11 @@ userRoute.patch("/:id", verifytoken, selfpolice(['admin']), update);
  *         description: User not found.
  *       500:
  *         description: Internal server error.
- */
+*/
 
 userRoute.delete("/:id", verifytoken, checkRole(["admin", "seo"]), remove);
+
+userRoute.post('/send-reset-password', resetPassword)
+userRoute.post('/reset-password', resetPassword)
 
 export default userRoute;

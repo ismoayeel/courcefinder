@@ -21,14 +21,9 @@
 
 
 import { Router } from "express";
-import {
-  findAll,
-  findBySearch,
-  findOne,
-  create,
-  update,
-  remove,
-} from "../controllers/yozilish.controller.js";
+import { findAll, findBySearch, findOne, create, update, remove } from "../controllers/yozilish.controller.js";
+import verifytoken from "../middleware/verifyToken.js";
+import checkRole from "../middleware/rolePolice.js";
 
 const yozilishRoute = Router();
 
@@ -60,6 +55,8 @@ const yozilishRoute = Router();
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of Yozilish items
@@ -128,6 +125,8 @@ yozilishRoute.get("/", findAll);
  *         schema:
  *           type: integer
  *           default: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of Yozilish items matching the search criteria
@@ -168,6 +167,8 @@ yozilishRoute.get("/query", findBySearch);
  *         description: ID of the Yozilish item
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: The Yozilish item
@@ -214,13 +215,15 @@ yozilishRoute.get("/:id", findOne);
  *                 type: integer
  *               oquvMarkazId:
  *                 type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: Yozilish item created successfully
  *       400:
  *         description: Bad request (invalid data)
  */
-yozilishRoute.post("/", create);
+yozilishRoute.post("/", verifytoken, create);
 
 /**
  * @swagger
@@ -248,6 +251,8 @@ yozilishRoute.post("/", create);
  *                 type: integer
  *               oquvMarkazId:
  *                 type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Yozilish item updated successfully
@@ -256,7 +261,7 @@ yozilishRoute.post("/", create);
  *       404:
  *         description: Yozilish item not found
  */
-yozilishRoute.patch("/:id", update);
+yozilishRoute.patch("/:id", verifytoken, checkRole(["admin"]), update);
 
 /**
  * @swagger
@@ -271,12 +276,14 @@ yozilishRoute.patch("/:id", update);
  *         description: ID of the Yozilish item to delete
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Yozilish item deleted successfully
  *       404:
  *         description: Yozilish item not found
  */
-yozilishRoute.delete("/:id", remove);
+yozilishRoute.delete("/:id", verifytoken, checkRole(["admin"]), remove);
 
 export default yozilishRoute;

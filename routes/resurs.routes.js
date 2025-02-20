@@ -29,6 +29,8 @@ import {
   getOneResurs,
   updateResurs,
 } from "../controllers/resurs.controller.js";
+import verifytoken from "../middleware/verifyToken.js";
+import checkRole from "../middleware/rolePolice.js";
 
 const resursRoute = express.Router();
 
@@ -66,6 +68,8 @@ const resursRoute = express.Router();
  *               desc:
  *                 type: string
  *                 description: "Description of the resource"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
  *         description: "Resource created successfully"
@@ -74,7 +78,7 @@ const resursRoute = express.Router();
  *       500:
  *         description: "Server error"
  */
-resursRoute.post("/", createResurs);
+resursRoute.post("/", verifytoken, createResurs);
 
 /**
  * @swagger
@@ -97,6 +101,8 @@ resursRoute.post("/", createResurs);
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A list of resources"
@@ -168,6 +174,8 @@ resursRoute.get("/", getAllResurs);
  *         schema:
  *           type: integer
  *           default: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "A filtered and sorted list of resources"
@@ -221,6 +229,8 @@ resursRoute.get("/query", findBySearchResurs);
  *         description: "ID of the resource to retrieve"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "The requested resource"
@@ -293,6 +303,8 @@ resursRoute.get("/:id", getOneResurs);
  *               desc:
  *                 type: string
  *                 description: "Description of the resource"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "Resource updated successfully"
@@ -303,7 +315,7 @@ resursRoute.get("/:id", getOneResurs);
  *       500:
  *         description: "Server error"
  */
-resursRoute.patch("/:id", updateResurs);
+resursRoute.patch("/:id", verifytoken, updateResurs);
 
 /**
  * @swagger
@@ -320,6 +332,8 @@ resursRoute.patch("/:id", updateResurs);
  *         description: "ID of the resource to delete"
  *         schema:
  *           type: integer
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: "Resource deleted successfully"
@@ -328,6 +342,6 @@ resursRoute.patch("/:id", updateResurs);
  *       500:
  *         description: "Server error"
  */
-resursRoute.delete("/:id", deleteResurs);
+resursRoute.delete("/:id", verifytoken, checkRole(["admin"]), deleteResurs);
 
 export default resursRoute;
