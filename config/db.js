@@ -1,4 +1,4 @@
-import { ConnectionTimedOutError, Sequelize } from "sequelize";
+import { Sequelize } from "sequelize";
 
 let sequelize = new Sequelize({
   host: "localhost",
@@ -7,7 +7,7 @@ let sequelize = new Sequelize({
   database: "coursefinder",
   dialect: "mysql",
   logging: false,
-  timezone: '+05:00',
+  timezone: '+5:00',
 });
 
 export default sequelize;

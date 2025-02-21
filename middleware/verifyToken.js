@@ -4,12 +4,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 async function verifytoken(req, res, next) {
-  let token = req.header("Authorization").split(" ").at(-1)
+  let token = req.header("Authorization")
   if (!token) {
     return res.status(404).send({ message: "Token not found ❗" });
   }
+  token = token.split(" ").at(-1)
   console.log(token);
-
   try {
     let data = jwt.verify(token, process.env.JWT_SECRET_KEY);
     req.user = data;
