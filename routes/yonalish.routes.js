@@ -28,7 +28,7 @@ import {
   create,
   update,
   remove,
-} from "../controllers/yonalish.controller.js";
+} from "../controllers/sohafan.controller.js";
 import verifytoken from "../middleware/verifyToken.js";
 import checkRole from "../middleware/rolePolice.js";
 

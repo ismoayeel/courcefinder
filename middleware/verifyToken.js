@@ -21,4 +21,3 @@ async function verifytoken(req, res, next) {
 }
 
 export default verifytoken;
-

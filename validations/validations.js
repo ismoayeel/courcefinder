@@ -36,17 +36,17 @@ const commentValidation = joi.object({
 })
 
 const yozilishValidation = joi.object({
-    userId: joi.number().required(),
+    userId: joi.string().required(),
     yonalishId: joi.number().required()
 })
 
 const yonalishValidation = joi.object({
-    name: joi.number().required(),
+    name: joi.string().required(),
     image: joi.string().required()
 })
 
 const oquvMarkazYonalishValidation = joi.object({
-    name: joi.number().required(),
+    name: joi.string().required(),
     image: joi.string().required()
 })
 

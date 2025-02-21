@@ -205,7 +205,8 @@ async function findAll(req, res) {
             users = await User.findAll({
                 limit: pagesize,
                 offset: offset,
-                include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
+                include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }],
+                attributes: []
             });
         } else {
             users = await User.findAll({
