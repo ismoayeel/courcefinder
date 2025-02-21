@@ -29,6 +29,8 @@ import {
   remove,
   update,
 } from "../controllers/oquvMarkaz.controller.js";
+import verifytoken from "../middleware/verifyToken.js";
+import checkRole from "../middleware/rolePolice.js";
 
 const oquvmarkazRoute = Router();
 

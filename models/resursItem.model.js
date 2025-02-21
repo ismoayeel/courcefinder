@@ -15,7 +15,7 @@ let resursItem = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: Resurs,
+        model: "resurs",
         key: "id",
       }
     },
@@ -23,7 +23,7 @@ let resursItem = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: resursCategory,
+        model: "resurscategory",
         key: "id",
       }
     }
@@ -33,5 +33,19 @@ let resursItem = sequelize.define(
 
 // Resurs.belongsToMany(resursCategory, { through: resursItem, foreignKey: "resursId" });
 // resursCategory.belongsToMany(Resurs, { through: resursItem, foreignKey: "resursCategoryId" });
+
+// // Yangi bog'lanish: resurs va resursitem o'rtasidagi bog'lanish
+// Resurs.hasMany(resursItem, { foreignKey: 'resursId' });
+// resursItem.belongsTo(Resurs, { foreignKey: 'resursId' });
+
+resursItem.associate = () => {
+  // Resurs va resursItem o'rtasidagi bog'lanish
+  Resurs.hasMany(resursItem, { foreignKey: "resursId" });
+  resursItem.belongsTo(Resurs, { foreignKey: "resursId" });
+
+  // ResursCategory va resursItem o'rtasidagi bog'lanish
+  resursCategory.hasMany(resursItem, { foreignKey: "resursCategoryId" });
+  resursItem.belongsTo(resursCategory, { foreignKey: "resursCategoryId" });
+};
 
 export default resursItem;

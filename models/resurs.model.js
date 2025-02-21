@@ -39,8 +39,15 @@ let Resurs = sequelize.define(
 User.hasMany(Resurs, { foreignKey: "userId" });
 Resurs.belongsTo(User, { foreignKey: "userId" });
 
-// Many-to-many bog'lanish (Resurs va ResursCategory)
-// Resurs.belongsToMany(resursCategory, { through: resursItem });
-// resursCategory.belongsToMany(Resurs, { through: resursItem });
+// Resurs.hasMany(resursItem, { foreignKey: "resursId" });
+// resursItem.belongsTo(Resurs, { foreignKey: "resursId" });
+
+// Resurs va resursItem o'rtasidagi bog'lanish
+Resurs.hasMany(resursItem, { foreignKey: "resursId" });
+resursItem.belongsTo(Resurs, { foreignKey: "resursId" });
+
+// Resurs va resursCategory o'rtasidagi bog'lanish
+Resurs.belongsToMany(resursCategory, { through: resursItem, foreignKey: "resursId" });
+resursCategory.belongsToMany(Resurs, { through: resursItem, foreignKey: "resursCategoryId" });
 
 export default Resurs;

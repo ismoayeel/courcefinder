@@ -31,6 +31,8 @@ import {
   update,
 } from "../controllers/filial.controller.js";
 import upload from "../config/multer.js";
+import verifytoken from "../middleware/verifyToken.js";
+import checkRole from "../middleware/rolePolice.js";
 
 const filialRoute = Router();
 

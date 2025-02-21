@@ -4,6 +4,9 @@ import sequelize from "./config/db.js";
 import mainRoute from "./routes/index.js";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import Resurs from "./models/resurs.model.js";
+import resursCategory from "./models/resursCategory.model.js";
+import resursItem from "./models/resursItem.model.js";
 
 dotenv.config()
 
@@ -27,6 +30,11 @@ const options = {
 
 const specs = swaggerJsdoc(options);
 
+const defineAssociations = () => {
+    Resurs.belongsToMany(resursCategory, { through: resursItem, foreignKey: "resursId" });
+    resursCategory.belongsToMany(Resurs, { through: resursItem, foreignKey: "resursCategoryId" });
+};
+
 let app = express()
 app.use(express.json())
 
@@ -37,17 +45,17 @@ let PORT = process.env.PORT
 
 async function bootstrap() {
     try {
-        await sequelize.sync({ force: true })
-        console.log("db connected");
+        defineAssociations();
+        // await sequelize.sync({ force: true });
+        console.log("DB connected");
         app.listen(PORT, () => {
-            console.log(`server started on port: ${PORT}`);
-        })
+            console.log(`Server started on port: ${PORT}`);
+        });
     } catch (error) {
-        console.log(error);
+        console.error("Database sync failed:", error);
     }
-}
+};
 
-bootstrap()
+bootstrap();
 
 app.use('/image', express.static('./uploads'));
-

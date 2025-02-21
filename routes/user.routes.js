@@ -47,7 +47,7 @@ let userRoute = Router();
  *               email:
  *                 type: string
  *                 description: The user's email address.
- *                 example: user@example.com
+ *                 example: user@gmail.com
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -88,13 +88,13 @@ userRoute.post("/send-otp", sendOtp);
  *                 example: John Doe
  *               phone:
  *                 type: string
- *                 example: "+123456789"
+ *                 example: "+998999999999"
  *               password:
  *                 type: string
- *                 example: "password123"
+ *                 example: "1234"
  *               email:
  *                 type: string
- *                 example: "user@example.com"
+ *                 example: "user@gmail.com"
  *               role:
  *                 type: string
  *                 enum: [user, seo, admin]
@@ -142,13 +142,13 @@ userRoute.post("/register/:otp", register);
  *                 example: John Doe
  *               phone:
  *                 type: string
- *                 example: "+123456789"
+ *                 example: "+998999999999"
  *               password:
  *                 type: string
- *                 example: "password123"
+ *                 example: "1234"
  *               email:
  *                 type: string
- *                 example: "admin@example.com"
+ *                 example: "admin@gmail.com"
  *               role:
  *                 type: string
  *                 enum: [user, seo, admin]
@@ -183,10 +183,10 @@ userRoute.post("/registerAdmin/:otp", registerAdmin);
  *             properties:
  *               email:
  *                 type: string
- *                 example: "user@example.com"
+ *                 example: "user@gmail.com"
  *               password:
  *                 type: string
- *                 example: "password123"
+ *                 example: "1234"
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -343,7 +343,7 @@ userRoute.get("/:id", verifytoken, selfpolice(["admin", "seo", "user"]), findOne
  *                 type: string
  *               image:
  *                 type: string
- *                 example: "newProfile.jpg"
+ *                 example: ""
  *               password:
  *                 type: string
  *                 example: "newPassword123"

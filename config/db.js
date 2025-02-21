@@ -6,7 +6,8 @@ let sequelize = new Sequelize({
   username: "root",
   database: "coursefinder",
   dialect: "mysql",
-  logging: false
+  logging: false,
+  timezone: '+05:00',
 });
 
 export default sequelize;
