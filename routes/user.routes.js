@@ -388,7 +388,71 @@ userRoute.patch("/:id", verifytoken, selfpolice(['admin']), update);
 
 userRoute.delete("/:id", verifytoken, checkRole(["admin", "seo"]), remove);
 
+
+/**
+ * @swagger
+ * /send-reset-password:
+ *   post:
+ *     tags: [User]
+ *     summary: Send OTP to the provided email
+ *     description: Generates and sends a one-time password (OTP) to the specified email address.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email address.
+ *                 example: user@gmail.com
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: OTP sent successfully.
+ *       500:
+ *         description: Internal server error.
+*/
+
 userRoute.post('/send-reset-password', resetPassword)
+
+/**
+ * @swagger
+ * /reset-password:
+ *   post:
+ *     tags: [User]
+ *     summary: Send OTP to the provided email
+ *     description: Generates and sends a one-time password (OTP) to the specified email address.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email address.
+ *                 example: user@gmail.com
+ *               otp:
+ *                 type: integer
+ *                 description: The otp sended to email
+ *                 example: user@gmail.com
+ *               newPassword:
+ *                 type: integer
+ *                 description: The otp sended to email
+ *                 example: user@gmail.com
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: OTP sent successfully.
+ *       500:
+ *         description: Internal server error.
+*/
+
 userRoute.post('/reset-password', resetPassword)
 
 export default userRoute;
