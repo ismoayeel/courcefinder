@@ -82,27 +82,16 @@ async function findOne(req, res) {
 }
 async function create(req, res) {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: "Fayl yuklanmadi" });
-    }
-    let { filename } = req.file;
-    let data = req.body;
     let { error, value } = sohaFanValidation.validate(req.body);
     if (error) {
       res.status(400).send(error.details[0].message);
-      await fs.unlink(`./uploads/${filename}`);
       return;
     }
-    let newItem = {
-      ...req.body,
-      image: filename,
-    };
-
-    await Sohafan.create(newItem);
-    res.status(201).send("Muvaffaqiyatli yaratildi");
+    let newData = await Sohafan.create(req.body);
+    res.status(201).send(newData);
   } catch (error) {
     console.log(error);
-    res.status(400).send(error);
+    res.status(500).send(error);
   }
 }
 async function update(req, res) {

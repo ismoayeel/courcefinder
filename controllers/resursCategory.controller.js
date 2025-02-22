@@ -12,8 +12,8 @@ const createResursCategoriy = async (req, res) => {
     if (error) {
       return res.send(error.details[0].message);
     }
-    await resursCategory.create(req.body);
-    res.status(201).json({ message: "Resurs muvaffaqiyatli yaratildi" });
+    let newData = await resursCategory.create(req.body);
+    res.status(201).json(newData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Resurs yaratishda xatolik" });

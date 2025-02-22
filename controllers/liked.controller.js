@@ -13,7 +13,7 @@ async function findAll(req, res) {
 
         let data = await Liked.findAll({
             limit: pagesize, offset: offset,
-            include: [{ model: User }, { model: Oquvmarkaz }]
+            include: [{ model: User, attributes: ["fullname", "phone", "image", "email", "role"] }, { model: Oquvmarkaz }]
         });
         res.send(data)
     } catch (error) {
@@ -57,7 +57,7 @@ async function findBySearch(req, res) {
             order: order,
             limit: limit,
             offset: offset,
-            include: [{ model: User }, { model: Oquvmarkaz }]
+            include: [{ model: User, attributes: ["fullname", "phone", "image", "email", "role"] }, { model: Oquvmarkaz }]
         });
 
         res.send(data);
@@ -69,7 +69,7 @@ async function findBySearch(req, res) {
 async function findOne(req, res) {
     try {
         let data = await Liked.findByPk(req.params.id, {
-            include: [{ model: User }, { model: Oquvmarkaz }]
+            include: [{ model: User, attributes: ["fullname", "phone", "image", "email", "role"] }, { model: Oquvmarkaz }]
         })
         res.send(data)
     } catch (error) {
@@ -79,7 +79,7 @@ async function findOne(req, res) {
 };
 async function create(req, res) {
     try {
-        let token = req.header("Authorization");
+        let token = req.header("Authorization").split(" ").at(-1);
         let data = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
         let { error, value } = likedValidation.validate(req.body);
@@ -91,8 +91,8 @@ async function create(req, res) {
         if (existingLike) {
             return res.status(400).send("you already liked");
         }
-        await Liked.create(req.body);
-        res.status(201).send("Liked Successfully ✅");
+        let newData = await Liked.create(req.body);
+        res.status(201).send(newData);
     } catch (error) {
         console.log(error);
         res.status(500).send(error);

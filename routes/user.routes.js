@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { findAll, findBySearch, findOne, login, register, registerAdmin, remove, resetPassword, sendOtp, update } from "../controllers/user.controller.js";
+import { findAll, findBySearch, findOne, login, myInfo, register, registerAdmin, remove, resetPassword, sendOtp, update } from "../controllers/user.controller.js";
 import verifytoken from "../middleware/verifyToken.js";
 import selfpolice from "../middleware/selfPolice.js";
 import checkRole from "../middleware/rolePolice.js";
@@ -285,6 +285,42 @@ userRoute.get("/query", findBySearch);
 
 userRoute.get("/", verifytoken, findAll);
 
+
+/**
+ * @swagger
+ * /user/my-info:
+ *   get:
+ *     tags: [User]
+ *     summary: Get all my infos
+ *     description: Fetches a list of self infos.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of infos.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       fullname:
+ *                         type: string
+ *                         example: "John Doe"
+ *                       email:
+ *                         type: string
+ *                         example: "john@example.com"
+ *       500:
+ *         description: Internal server error.
+ */
+
+userRoute.get("/my-info", verifytoken, myInfo);
+
+
 /**
  * @swagger
  * /user/{id}:
@@ -358,7 +394,7 @@ userRoute.get("/:id", verifytoken, selfpolice(["admin", "seo", "user"]), findOne
  *         description: Internal server error.
 */
 
-userRoute.patch("/:id", verifytoken, selfpolice(['admin']), update);
+userRoute.patch("/:id", verifytoken, selfpolice(['admin', "user", "seo"]), update);
 
 /**
  * @swagger

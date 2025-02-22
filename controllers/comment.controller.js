@@ -80,7 +80,7 @@ async function findOne(req, res) {
 };
 async function create(req, res) {
     try {
-        let token = req.header("Authorization");
+        let token = req.header("Authorization").split(" ").at(-1);
         let data = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
         req.body.userId = data.id;
@@ -88,8 +88,8 @@ async function create(req, res) {
         if (error) {
             return res.status(400).send(error.details[0].message)
         }
-        await Comment.create(req.body)
-        res.status(201).send("created Successfully ✅")
+        let newData = await Comment.create(req.body)
+        res.status(201).send(newData)
     } catch (error) {
         console.log(error);
         res.status(500).send(error)

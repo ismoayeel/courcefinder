@@ -56,9 +56,6 @@ const resursRoute = express.Router();
  *           schema:
  *             type: object
  *             properties:
- *               userId:
- *                 type: integer
- *                 description: "The ID of the user who owns the resource"
  *               name:
  *                 type: string
  *                 description: "Name of the resource"
@@ -68,6 +65,9 @@ const resursRoute = express.Router();
  *               desc:
  *                 type: string
  *                 description: "Description of the resource"
+ *               resursCategoryId:
+ *                 type: integer
+ *                 description: "id of Category of resurs"
  *     security:
  *       - bearerAuth: []
  *     responses:

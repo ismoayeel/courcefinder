@@ -203,7 +203,7 @@ filialRoute.get("/:id", findOne);
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
@@ -218,7 +218,12 @@ filialRoute.get("/:id", findOne);
  *                 example: "New Location"
  *               image:
  *                 type: string
- *                 format: binary
+ *                 description: The image for the filial.
+ *               oquvMarkazId:
+ *                 type: integer
+ *                 description: The image for the filial.
+ *               regionId:
+ *                 type: integer
  *                 description: The image for the filial.
  *     security:
  *       - bearerAuth: []

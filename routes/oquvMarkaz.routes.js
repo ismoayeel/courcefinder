@@ -186,7 +186,7 @@ oquvmarkazRoute.get("/:id", findOne);
  *   post:
  *     tags: [Oquvmarkaz]
  *     summary: Create a new Oquvmarkaz
- *     description: Creates a new Oquvmarkaz item. Requires the name, address, location, userId, and regionId fields in the request body.
+ *     description: Creates a new Oquvmarkaz item. Requires the name, address, location, image and regionId fields in the request body.
  *     requestBody:
  *       required: true
  *       content:
@@ -198,6 +198,10 @@ oquvmarkazRoute.get("/:id", findOne);
  *                 type: string
  *                 description: The name of the Oquvmarkaz.
  *                 example: "Oquv Markazi A"
+ *               filialSoni:
+ *                 type: integer
+ *                 description: Number of Filials of the Oquvmarkaz.
+ *                 example: 0
  *               address:
  *                 type: string
  *                 description: The address of the Oquvmarkaz.
@@ -210,10 +214,9 @@ oquvmarkazRoute.get("/:id", findOne);
  *                 type: integer
  *                 description: The ID of the region the Oquvmarkaz belongs to.
  *                 example: 1
- *               userId:
- *                 type: integer
- *                 description: The ID of the user who created the Oquvmarkaz.
- *                 example: 1
+ *               image:
+ *                 type: string
+ *                 description: Image of Oquv Markaz
  *     security:
  *       - bearerAuth: []
  *     responses:

@@ -13,7 +13,7 @@ async function findAll(req, res) {
 
         let data = await Region.findAll({
             limit: pagesize, offset: offset,
-            include: [{ model: Oquvmarkaz }, { model: Filial }]
+            include: [{ model: Oquvmarkaz }]
         });
         res.send(data)
     } catch (error) {
@@ -57,7 +57,7 @@ async function findBySearch(req, res) {
             order: order,
             limit: limit,
             offset: offset,
-            include: [{ model: Filial }, { model: Oquvmarkaz }]
+            include: [{ model: Oquvmarkaz }]
         });
 
         res.send(data);
@@ -69,7 +69,7 @@ async function findBySearch(req, res) {
 async function findOne(req, res) {
     try {
         let data = await Region.findByPk(req.params.id, {
-            include: [{ model: Filial }, { model: Oquvmarkaz }]
+            include: [{ model: Oquvmarkaz }]
         });
         res.send(data)
     } catch (error) {
@@ -83,8 +83,8 @@ async function create(req, res) {
         if (error) {
             return res.status(400).send(error.details[0].message)
         }
-        await Region.create(req.body)
-        res.status(201).send("created Successfully ✅")
+        let newData = await Region.create(req.body)
+        res.status(201).send(newData)
     } catch (error) {
         console.log(error);
         res.status(400).send(error)

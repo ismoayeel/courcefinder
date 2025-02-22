@@ -8,6 +8,8 @@ import { oquvMarkazUpdate } from "../validations/updateValidations.js";
 import { oquvMarkazValidation } from "../validations/validations.js";
 import { Op } from "sequelize";
 import Yozilish from "../models/yozilish.model.js";
+import jwt from "jsonwebtoken"
+import Yonalish from "../models/yonalish.model.js";
 
 async function findAll(req, res) {
     try {
@@ -17,7 +19,7 @@ async function findAll(req, res) {
 
         let data = await Oquvmarkaz.findAndCountAll({
             limit: pagesize, offset: offset,
-            include: [{ model: User }, { model: Region }, { model: Filial }, { model: Comment }, { model: Liked }, { model: Yozilish }]
+            include: [{ model: User, attributes: ["fullname", "phone", "role", "image", "email"] }, { model: Region }, { model: Filial }, { model: Comment }, { model: Liked }, { model: Yozilish }, { model: Yonalish }]
         });
         res.send(data)
     } catch (error) {
@@ -61,7 +63,7 @@ async function findBySearch(req, res) {
             order: order,
             limit: limit,
             offset: offset,
-            include: [{ model: User }, { model: Region }, { model: Filial }, { model: Comment }, { model: Liked }, { model: Yozilish }]
+            include: [{ model: User }, { model: Region }, { model: Filial }, { model: Comment }, { model: Liked }, { model: Yozilish }, { model: Yonalish }]
         });
 
         res.send(data);
@@ -73,7 +75,7 @@ async function findBySearch(req, res) {
 async function findOne(req, res) {
     try {
         let data = await Oquvmarkaz.findByPk(req.params.id, {
-            include: [{ model: User }, { model: Region }, { model: Filial }, { model: Comment }, { model: Liked }, { model: Yozilish }]
+            include: [{ model: User }, { model: Region }, { model: Filial }, { model: Comment }, { model: Liked }, { model: Yozilish }, { model: Yonalish }]
         })
         res.send(data)
     } catch (error) {
@@ -87,8 +89,13 @@ async function create(req, res) {
         if (error) {
             return res.status(400).send(error.details[0].message)
         }
-        await Oquvmarkaz.create(req.body)
-        res.status(201).send("created Successfully ✅")
+        let token = req.header("Authorization").split(" ").at(-1);
+        let data = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+        req.body.userId = data.id;
+        let newData = await Oquvmarkaz.create(req.body)
+        await newData.save()
+        res.status(201).send(newData)
     } catch (error) {
         console.log(error);
         res.status(400).send(error)

@@ -11,7 +11,7 @@ let Oquvmarkaz = sequelize.define("oquvmarkazs", {
     },
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: User,
             key: "id"
@@ -23,7 +23,7 @@ let Oquvmarkaz = sequelize.define("oquvmarkazs", {
     },
     filialSoni: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     },
     address: {
         type: DataTypes.STRING,

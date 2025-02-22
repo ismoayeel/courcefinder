@@ -6,15 +6,20 @@ import {
 } from "../validations/resursValidation.js";
 import { Op } from "sequelize";
 import resursCategory from "../models/resursCategory.model.js"
+import jwt from "jsonwebtoken"
 
 const createResurs = async (req, res) => {
   try {
+    let token = req.header("Authorization").split(" ").at(-1);
+    let data = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+    req.body.userId = data.id;
     let { error, value } = resursValidation.validate(req.body);
     if (error) {
       return res.send(error.details[0].message);
     }
-    await Resurs.create(req.body);
-    res.status(201).json({ message: "Resurs muvaffaqiyatli yaratildi" });
+    let newData = await Resurs.create(req.body);
+    res.status(201).json(newData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Resurs yaratishda xatolik" });
@@ -30,7 +35,7 @@ const getAllResurs = async (req, res) => {
     let resursList = await Resurs.findAll({
       limit: pagesize,
       offset: offset,
-      include: [{ model: User }, { model: resursCategory }]
+      include: [{ model: User, attributes: ["fullname", "phone", "image", "email", "role"]}, { model: resursCategory }]
     });
     res.status(200).json(resursList);
   } catch (error) {
@@ -75,7 +80,7 @@ async function findBySearchResurs(req, res) {
       order: order,
       limit: limit,
       offset: offset,
-      include: [{ model: User }, { model: resursCategory }]
+      include: [{ model: User, attributes: ["fullname", "phone", "image", "email", "role"] }, { model: resursCategory }]
     });
 
     res.send(data);
@@ -89,7 +94,7 @@ const getOneResurs = async (req, res) => {
   try {
     const { id } = req.params;
     const resurs = await Resurs.findByPk(id, {
-      include: [{ model: User }, { model: resursCategory }]
+      include: [{ model: User, attributes: ["fullname", "phone", "image", "email", "role"] }, { model: resursCategory }]
     });
     if (!resurs) {
       return res.status(404).json({ message: "Resurs topilmadi" });

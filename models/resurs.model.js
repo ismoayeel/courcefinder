@@ -2,7 +2,6 @@ import { DataTypes, STRING } from "sequelize";
 import sequelize from "../config/db.js";
 import User from "./user.model.js";
 import resursCategory from "./resursCategory.model.js";
-import resursItem from "./resursItem.model.js";
 
 let Resurs = sequelize.define(
   "resurs",
@@ -32,6 +31,14 @@ let Resurs = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    resursCategoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: resursCategory,
+        key: "id"
+      }
+    }
   },
   { timestamps: true }
 );
@@ -39,15 +46,7 @@ let Resurs = sequelize.define(
 User.hasMany(Resurs, { foreignKey: "userId" });
 Resurs.belongsTo(User, { foreignKey: "userId" });
 
-// Resurs.hasMany(resursItem, { foreignKey: "resursId" });
-// resursItem.belongsTo(Resurs, { foreignKey: "resursId" });
-
-// Resurs va resursItem o'rtasidagi bog'lanish
-Resurs.hasMany(resursItem, { foreignKey: "resursId" });
-resursItem.belongsTo(Resurs, { foreignKey: "resursId" });
-
-// Resurs va resursCategory o'rtasidagi bog'lanish
-Resurs.belongsToMany(resursCategory, { through: resursItem, foreignKey: "resursId" });
-resursCategory.belongsToMany(Resurs, { through: resursItem, foreignKey: "resursCategoryId" });
+Resurs.belongsTo(resursCategory, { foreignKey: "resursCategoryId" })
+resursCategory.hasMany(Resurs, { foreignKey: "resursCategoryId" })
 
 export default Resurs;

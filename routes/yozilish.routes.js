@@ -209,8 +209,6 @@ yozilishRoute.get("/:id", findOne);
  *           schema:
  *             type: object
  *             properties:
- *               userId:
- *                 type: integer
  *               yonalishId:
  *                 type: integer
  *               oquvMarkazId:

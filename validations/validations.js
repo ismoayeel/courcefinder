@@ -5,9 +5,9 @@ const regionValidation = joi.object({
 })
 
 const oquvMarkazValidation = joi.object({
-    userId: joi.number().required(),
+    userId: joi.number().optional(),
     name: joi.string().required(),
-    filialSoni: joi.number().required(),
+    filialSoni: joi.number().optional(),
     address: joi.string().required(),
     location: joi.string().required(),
     regionId: joi.number().required(),
@@ -36,13 +36,15 @@ const commentValidation = joi.object({
 })
 
 const yozilishValidation = joi.object({
-    userId: joi.string().required(),
+    userId: joi.number().required(),
+    oquvMarkazId: joi.number().required(),
     yonalishId: joi.number().required()
 })
 
 const yonalishValidation = joi.object({
     name: joi.string().required(),
-    image: joi.string().required()
+    image: joi.string().required(),
+    oquvMarkazId: joi.number().required()
 })
 
 const oquvMarkazYonalishValidation = joi.object({

@@ -11,6 +11,7 @@ import { registerAdminValidate } from "../validations/userAdmin.validate.js";
 import Comment from "../models/comment.model.js";
 import Oquvmarkaz from "../models/oquvMarkaz.model.js";
 import Resurs from "../models/resurs.model.js";
+import Liked from "../models/liked.model.js";
 
 dotenv.config()
 
@@ -82,9 +83,9 @@ async function registerAdmin(req, res) {
             return
         }
         const hashPassword = bcrypt.hashSync(password, 7);
-        await User.create({ fullname, phone, password: hashPassword, email, role, image })
+        let newAdmin = await User.create({ fullname, phone, password: hashPassword, email, role, image })
 
-        res.status(201).send({ message: "Register successfully✅" })
+        res.status(201).send({ fullname, phone, email, role, image })
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: error.message })
@@ -206,12 +207,7 @@ async function findAll(req, res) {
                 limit: pagesize,
                 offset: offset,
                 include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }],
-                attributes: []
-            });
-        } else {
-            users = await User.findAll({
-                where: { id: userId },
-                include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
+                attributes: ["fullname", "role", "phone", "image", "email"]
             });
         }
 
@@ -221,6 +217,24 @@ async function findAll(req, res) {
 
         res.status(200).send({ data: users });
 
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: error.message });
+    }
+}
+
+async function myInfo(req, res) {
+    try {
+        let token = req.header("Authorization").split(" ").at(-1);
+        let data = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+        let meee = await User.findAll({
+            where: { id: data.id },
+            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }, { model: Liked }],
+            attributes: ["fullname", "role", "phone", "image", "email"]
+        });
+        
+        res.status(200).send(meee);
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: error.message });
@@ -245,29 +259,36 @@ async function findOne(req, res) {
 async function update(req, res) {
     try {
         const { id } = req.params;
-        const { error } = userUpdateValid.validate(req.body)
+        const { error } = userUpdateValid.validate(req.body);
         if (error) {
-            return res.status(400).send({ message: error.details[0].message })
+            return res.status(400).send({ message: error.details[0].message });
         }
-        console.log(req.user);
         const { fullname, email, image, phone, password } = req.body;
-        if (image) {
-            await fs.unlink(`./uploads/${req.user.image}`)
-        }
         const user = await User.findByPk(id);
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }
-        await User.update({ fullname, email, role, image, phone, password }, { where: { id } });
-
-        const updatedUser = await User.findByPk(id)
-
+        if (image && user.image) {
+            await fs.unlink(`./uploads/${user.image}`).catch(err => {
+                if (err.code !== 'ENOENT') throw err;
+            });
+        }
+        let hashedPassword = user.password;
+        if (password) {
+            hashedPassword = await bcrypt.hash(password, 10);
+        }
+        await User.update(
+            { fullname, email, image, phone, password: hashedPassword },
+            { where: { id } }
+        );
+        const updatedUser = await User.findByPk(id);
         res.status(200).send({ message: "User updated successfully", data: updatedUser });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: error.message })
+        res.status(500).send({ message: error.message });
     }
 }
+
 
 async function remove(req, res) {
     try {
@@ -284,4 +305,4 @@ async function remove(req, res) {
     }
 }
 
-export { sendOtp, register, findAll, findOne, update, remove, login, findBySearch, registerAdmin, resetPassword }
+export { sendOtp, register, findAll, findOne, update, remove, login, findBySearch, registerAdmin, resetPassword, myInfo }

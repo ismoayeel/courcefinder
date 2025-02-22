@@ -28,7 +28,7 @@ import {
   create,
   update,
   remove,
-} from "../controllers/sohafan.controller.js";
+} from "../controllers/yonalish.controller.js";
 import verifytoken from "../middleware/verifyToken.js";
 import checkRole from "../middleware/rolePolice.js";
 
@@ -214,6 +214,8 @@ yonalishRoute.get("/:id", findOne);
  *                 type: string
  *               image:
  *                 type: string
+ *               oquvMarkazId:
+ *                 type: integer
  *     security:
  *       - bearerAuth: []
  *     responses:

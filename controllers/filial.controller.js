@@ -83,8 +83,8 @@ async function create(req, res) {
         if (error) {
             return res.status(400).send(error.details[0].message)
         }
-        await Filial.create(req.body)
-        res.status(201).send("created Successfully ✅")
+        let newData = await Filial.create(req.body)
+        res.status(201).send(newData)
     } catch (error) {
         console.log(error);
         res.status(400).send(error)

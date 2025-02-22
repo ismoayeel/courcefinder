@@ -5,6 +5,7 @@ import Yozilish from "../models/yozilish.model.js";
 import { yozilishUpdate } from "../validations/updateValidations.js";
 import { yozilishValidation } from "../validations/validations.js";
 import { Op } from "sequelize";
+import jwt from "jsonwebtoken"
 
 async function findAll(req, res) {
     try {
@@ -15,7 +16,7 @@ async function findAll(req, res) {
         let data = await Yozilish.findAll({
             limit: pagesize,
             offset: offset,
-            include: [{ model: User }, { model: Yonalish }, {model: Oquvmarkaz}]
+            include: [{ model: User }, { model: Yonalish }, { model: Oquvmarkaz }]
         })
         res.send(data)
     } catch (error) {
@@ -59,7 +60,7 @@ async function findBySearch(req, res) {
             order: order,
             limit: limit,
             offset: offset,
-            include: [{ model: User }, { model: Yonalish }, {model: Oquvmarkaz}]
+            include: [{ model: User }, { model: Yonalish }, { model: Oquvmarkaz }]
         });
 
         res.send(data);
@@ -71,7 +72,7 @@ async function findBySearch(req, res) {
 async function findOne(req, res) {
     try {
         let data = await Yozilish.findByPk(req.params.id, {
-            include: [{ model: User }, { model: Yonalish }, {model: Oquvmarkaz}]
+            include: [{ model: User }, { model: Yonalish }, { model: Oquvmarkaz }]
         })
         res.send(data)
     } catch (error) {
@@ -81,12 +82,16 @@ async function findOne(req, res) {
 };
 async function create(req, res) {
     try {
+        let token = req.header("Authorization").split(" ").at(-1);
+        let data = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+        req.body.userId = data.id;
         let { error, value } = yozilishValidation.validate(req.body)
         if (error) {
             return res.status(400).send(error.details[0].message)
         }
-        await Yozilish.create(req.body)
-        res.status(201).send("created Successfully ✅")
+        let newData = await Yozilish.create(req.body)
+        res.status(201).send(newData)
     } catch (error) {
         console.log(error);
         res.status(400).send(error)

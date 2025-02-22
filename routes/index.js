@@ -7,9 +7,7 @@ import oquvmarkazRoute from "./oquvMarkaz.routes.js";
 import regionRoute from "./region.routes.js";
 import yozilishRoute from "./yozilish.routes.js";
 import yonalishRoute from "./yonalish.routes.js";
-import oquvMarkazYonalishRoute from "./oquvmarkazyonalish.routes.js";
 import resursCategoryRoute from "./resursCategory.routes.js";
-import resursItemRoute from "./resursItem.routes.js";
 import resursRoute from "./resurs.routes.js";
 import sohaFanRoutes from "./sohaFan.routes.js";
 import uploadRoute from "./upload.routes.js";
@@ -24,9 +22,7 @@ mainRoute.use("/oquv-markaz", oquvmarkazRoute)
 mainRoute.use("/region", regionRoute)
 mainRoute.use('/yozilish', yozilishRoute)
 mainRoute.use('/yonalish', yonalishRoute)
-mainRoute.use('/oquv-markaz-yonalish', oquvMarkazYonalishRoute)
 mainRoute.use('/resurs-category', resursCategoryRoute)
-mainRoute.use('/resurs-item', resursItemRoute)
 mainRoute.use('/resurs', resursRoute)
 mainRoute.use('/sohafan', sohaFanRoutes)
 mainRoute.use('/upload', uploadRoute)

@@ -1,3 +1,4 @@
+import Oquvmarkaz from "../models/oquvMarkaz.model.js";
 import Sohafan from "../models/sofaFan.model.js";
 import Yonalish from "../models/yonalish.model.js";
 import { yonalishUpdate } from "../validations/updateValidations.js";
@@ -13,7 +14,7 @@ async function findAll(req, res) {
         let data = await Yonalish.findAll({
             limit: pagesize,
             offset: offset,
-            include: [{ model: Sohafan }]
+            include: [{ model: Sohafan }, { model: Oquvmarkaz }]
         })
         res.send(data)
     } catch (error) {
@@ -57,7 +58,7 @@ async function findBySearch(req, res) {
             order: order,
             limit: limit,
             offset: offset,
-            include: [{ model: Sohafan }]
+            include: [{ model: Sohafan }, { model: Oquvmarkaz }]
         });
 
         res.send(data);
@@ -69,7 +70,7 @@ async function findBySearch(req, res) {
 async function findOne(req, res) {
     try {
         let data = await Yonalish.findByPk(req.params.id, {
-            include: [{ model: Sohafan }]
+            include: [{ model: Sohafan }, { model: Oquvmarkaz }]
         })
         res.send(data)
     } catch (error) {
@@ -83,8 +84,8 @@ async function create(req, res) {
         if (error) {
             return res.status(400).send(error.details[0].message)
         }
-        await Yonalish.create(req.body)
-        res.status(201).send("created Successfully ✅")
+        let newData = await Yonalish.create(req.body)
+        res.status(201).send(newData)
     } catch (error) {
         console.log(error);
         res.status(400).send(error)
