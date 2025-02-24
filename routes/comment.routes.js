@@ -54,8 +54,6 @@ const commentRoute = Router();
  *           application/json:
  *             schema:
  *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Comment'
  *       500:
  *         description: "Server error"
  */
@@ -103,8 +101,6 @@ commentRoute.get("/", findAll);
  *           application/json:
  *             schema:
  *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Comment'
  *       500:
  *         description: "Server error"
  */
@@ -132,8 +128,6 @@ commentRoute.get("/query", findBySearch);
  *         description: "The requested Comment"
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Comment'
  *       404:
  *         description: "Comment not found"
  *       500:

@@ -16,7 +16,7 @@ async function findAll(req, res) {
     let data = await Sohafan.findAndCountAll({
       limit: pagesize,
       offset: offset,
-      include: [{ model: Yonalish }, { model: User }]
+      include: [{ model: Yonalish }]
     });
     res.send(data);
   } catch (error) {
@@ -60,7 +60,7 @@ async function findBySearch(req, res) {
       order: order,
       limit: limit,
       offset: offset,
-      include: [{ model: Yonalish }, { model: User }]
+      include: [{ model: Yonalish }]
     });
 
     res.send(data);
@@ -72,7 +72,7 @@ async function findBySearch(req, res) {
 async function findOne(req, res) {
   try {
     let data = await Sohafan.findByPk(req.params.id, {
-      include: [{ model: Yonalish }, { model: User }]
+      include: [{ model: Yonalish }]
     });
     res.send(data);
   } catch (error) {

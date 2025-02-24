@@ -233,7 +233,7 @@ async function myInfo(req, res) {
             include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }, { model: Liked }],
             attributes: ["fullname", "role", "phone", "image", "email"]
         });
-        
+
         res.status(200).send(meee);
     } catch (error) {
         console.log(error);
@@ -244,7 +244,8 @@ async function myInfo(req, res) {
 async function findOne(req, res) {
     try {
         const user = await User.findByPk(req.params.id, {
-            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }]
+            include: [{ model: Comment }, { model: Oquvmarkaz }, { model: Resurs }],
+            attributes: ["fullname", "role", "phone", "image", "email"]
         });
         if (!user) {
             return res.status(404).send({ message: "User not found" });

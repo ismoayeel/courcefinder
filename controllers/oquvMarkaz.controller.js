@@ -17,7 +17,7 @@ async function findAll(req, res) {
         const pagesize = parseInt(req.query.page) || 10;
         const offset = (page - 1) * pagesize;
 
-        let data = await Oquvmarkaz.findAndCountAll({
+        let data = await Oquvmarkaz.findAll({
             limit: pagesize, offset: offset,
             include: [{ model: User, attributes: ["fullname", "phone", "role", "image", "email"] }, { model: Region }, { model: Filial }, { model: Comment }, { model: Liked }, { model: Yozilish }, { model: Yonalish }]
         });

@@ -14,7 +14,7 @@ async function findAll(req, res) {
         let data = await Comment.findAll({
             limit: pagesize,
             offset: offset,
-            include: [{ model: User }, { model: Oquvmarkaz }]
+            include: [{ model: User, attributes:["fullname", "role", "phone", "image", "email"] }, { model: Oquvmarkaz }],
         })
         res.send(data)
     } catch (error) {
